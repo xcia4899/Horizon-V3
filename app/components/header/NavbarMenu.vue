@@ -1,0 +1,328 @@
+<template>
+  <ul ref="menuRef" class="nav-list">
+    <li
+      v-for="menu in menus"
+      :key="menu.ID"
+      class="navbar-item"
+      :class="{ active: openMenu === menu.ID && menu.items.length > 0 }"
+      @mouseenter="isDesktop && setOpenMenu(menu.ID)"
+    >
+      <!-- label -->
+      <button
+        v-if="!menu.items.length"
+        class="navbar-title"
+        @click.prevent="navigateWithDelay(menu.to)"
+      >
+        {{ menu.label }}
+      </button>
+      <button v-else class="navbar-title" @click="toggleMenu(menu.ID)">
+        {{ menu.label }}
+      </button>
+      <!-- 下拉選單 -->
+      <div
+        v-show="menu.items.length > 0"
+        class="dropdown"
+        :class="{ isOpen: openMenu === menu.ID }"
+      >
+        <ul class="dropdown-inner">
+          <li
+            v-for="item in menu.items"
+            :key="item.text"
+            class="dropdown-content"
+          >
+            <div class="card" @click="goProducts(item)">
+              <div class="item-pic">
+                <NuxtImg :src="item.img" alt="" />
+              </div>
+              <div class="item-text">
+                <h4>{{ item.text }}</h4>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from "vue";
+//menu 型別
+import type {  MenuItem, SetMenu } from "~/types/ui/menu";
+const { openMenu,setOpenMenu, toggleMenu, closeMenu } = useMenu();
+//控制menuOPen 手機版本開關控制
+
+//螢幕、手機模式判斷
+const { isDesktop, isTouch } = useInteractionMode();
+const props = defineProps<{
+  menus: SetMenu[];
+  closeMenuOpenMobile: () => void;
+}>();
+
+// 導覽列ref，用來判斷是否點擊到外部
+const menuRef = ref<HTMLElement | null>(null);
+// 目前開啟的dropdown的ID
+
+// 點擊選單外部時關閉所有選單
+function handleClickOutside(e: MouseEvent) {
+  if (isTouch.value) return;
+  if (!menuRef.value) return;
+  if (!menuRef.value.contains(e.target as Node)) {
+    closeMenu()
+  }
+}
+// console.log("SSR:", import.meta.server);
+// 掛載時註冊全域點擊事件
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+// 卸載時移除事件
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
+//跳轉商品頁 可代參數
+// 跳轉商品頁，可帶參數
+const goProducts = async (item: MenuItem) => {
+  await looding(200);
+
+  const query: Record<string, string | string[]> = {};
+  if (item?.tag) query.tag = [item.tag];
+  if (item?.text === "特價商品") query.onsale = "true";
+
+  await navigateTo({
+    path: "/products",
+    query,
+  });
+
+  closeMenu()
+  props.closeMenuOpenMobile();
+};
+
+const navigateWithDelay = async (to?: string) => {
+  if (!to) return;
+  await looding(200);
+  await navigateTo(to);
+  closeMenu()
+  props.closeMenuOpenMobile();
+};
+</script>
+
+<style scoped lang="scss">
+.nav-list {
+  display: flex;
+  justify-content: center;
+
+  margin: auto auto;
+}
+.navbar-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: $headerHeight;
+  padding: 0 8px;
+  background-color: transparent;
+  border-bottom: 4px solid transparent;
+  cursor: pointer;
+  @media (hover: hover) and (pointer: fine) {
+    &:not(.active):hover {
+      border-color: var(--brand);
+    }
+    &:not(.active):hover .navbar-title {
+      color: var(--brand-hover);
+    }
+  }
+  &.active {
+    border-color: var(--brand);
+  }
+  .navbar-title {
+    border-style: none;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+
+    letter-spacing: 1px;
+    font-size: clamp(14px, 2vw, 18px);
+    white-space: nowrap;
+    background-color: transparent;
+
+    color: var(--color-primary);
+    padding: 8px 8px;
+    cursor: pointer;
+    @media (pointer: coarse) {
+      min-height: 44px;
+      padding: 16px 12px;
+      width: 100%;
+    }
+    &:active {
+      opacity: 0.85;
+    }
+    &.active {
+      color: var(--brand-hover);
+    }
+  }
+
+  .dropdown {
+    position: fixed;
+    top: $headerHeight;
+    left: 1%;
+    width: 98%;
+    padding: 24px 16px;
+    background: var(--bg-surface);
+    border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    pointer-events: none;
+    cursor: default;
+
+    box-shadow: var(--shadow-default);
+    transition:
+      max-height 0.4s ease,
+      inset 0.4s ease,
+      opacity 0.4s ease,
+      transform 0.6s ease,
+      visibility 0.4s ease;
+  }
+  .dropdown.isOpen {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .dropdown-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(16px, 1.6vw, 32px);
+  }
+  .dropdown-content {
+    .card {
+      position: relative;
+      width: clamp(72px, 12vw, 160px);
+      display: flex;
+      flex-direction: column;
+      border-radius: 6px;
+      color: var(--text-secondary);
+
+      z-index: 1;
+      cursor: pointer;
+      * {
+        position: relative;
+        z-index: 1;
+      }
+      .item-pic {
+        padding: 8px;
+        aspect-ratio: 1/1;
+        border-radius: 6px;
+        overflow: hidden;
+        background: var(--bg-surface-card);
+        img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+      .item-text {
+        padding: 16px 8px 16px;
+        text-align: center;
+        overflow-wrap: break-word;
+        transition: color 0.4s ease;
+        h4 {
+          cursor: pointer;
+          font-size: clamp(12px, 2vw, 20px);
+          white-space: nowrap;
+        }
+      }
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      border-radius: 6px;
+      inset: 0 0 0 0;
+      transform: scaleY(0);
+      transform-origin: top;
+      background: var(--bg-surface-card);
+      box-shadow: transparent;
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.6s ease;
+      z-index: 0;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .card:hover .item-text {
+        color: $color-purple-700;
+      }
+      .card:hover::after {
+        transform: scaleY(1);
+        box-shadow: var(--shadow-card);
+      }
+    }
+  }
+}
+
+/* ===== mobile ===== */
+@media screen and (max-width: 768px) {
+  .nav-list {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 8px 0;
+    gap: 8px;
+    /* // overflow-y: auto; */
+  }
+  .navbar-item {
+    display: block;
+    height: auto;
+    padding: 0;
+    width: 100%;
+    border-bottom: 2px solid var(--border-default);
+    .dropdown {
+      position: relative;
+      top: 0;
+      left: 0;
+      padding: 0;
+      max-height: 0px;
+
+      width: 100%;
+      border-radius: 0px;
+      background-color: transparent;
+      transform: translateY(0px);
+    }
+    .dropdown.isOpen {
+      max-height: 600px;
+    }
+    .dropdown-inner {
+      gap: 16px 16px;
+      padding: 16px;
+      justify-content: center;
+    }
+    .dropdown-content {
+      .card {
+        display: flex;
+        flex-direction: column;
+
+        .item-pic {
+          padding: 8px;
+          background: transparent;
+        }
+        .item-text {
+          padding: 4px;
+          text-align: center;
+          color: $color-purple-700;
+        }
+      }
+      .card::after {
+        content: "";
+        transform: scaleY(1);
+      }
+    }
+  }
+}
+</style>

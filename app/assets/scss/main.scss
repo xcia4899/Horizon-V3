@@ -1,0 +1,317 @@
+@use "sass:color";
+
+* {
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;
+    //    background-color: $color-gray-100;
+}
+
+body {
+    color: var(--text-primary);
+    background-color: var(--bg-page);
+    font-family:
+        /* English first */
+        微軟正黑體,
+        Arial,
+        Helvetica,
+        "Microsoft JhengHei",
+        /* Chinese first */
+        "PingFang TC",
+        /* mac */
+        "Noto Sans TC",
+        /* Android / fallback Chinese */
+        /* System fallback */
+        sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4;
+    transition:
+        color 0.4s,
+        background-color 0.4s;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+    letter-spacing: 1px;
+    // white-space: nowrap;
+    cursor: default;
+}
+
+/* 大標題 */
+h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900;
+}
+
+/* 次標題 */
+h3 {
+    font-size: clamp(20px, 3vw, 30px);
+    font-weight: 600;
+}
+
+/* 小標題 */
+h4 {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 600;
+}
+
+/* 輔助標題 */
+h5 {
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: 400;
+}
+
+/* 內文 */
+p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+    letter-spacing: 1px;
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: 400;
+    overflow-wrap: break-word;
+    cursor: default;
+    // color: var(--text-secondary);
+}
+
+// .card-desc {
+//   display: -webkit-box;
+//   -webkit-line-clamp: 2;
+//   -webkit-box-orient: vertical;
+//   overflow: hidden;
+// }
+
+// white-space: nowrap;
+// overflow: hidden;
+// text-overflow: ellipsis;
+//scrollbar-width: none;  //隱藏滾輪
+//user-select: none;  //文字無法被選取
+a {
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+button {
+    background: none;
+    border: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.btn {
+    display: grid;
+    place-items: center;
+    width: clamp(120px, 16vw, 160px);
+    height: 44px;
+
+    font-size: clamp(14px, 1.5vw, 16px);
+    font-weight: 400;
+
+    color: $color-white;
+    background-color: var(--action-primary);
+    border: 2px solid transparent;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition:
+        color 0.3s ease,
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.3s ease;
+
+    &:active:not(:disabled) {
+        color: $color-white;
+        background-color: var(--action-primary-soft);
+        border-color: var(--action-primary-hover);
+        transform: scale(0.98);
+
+    }
+
+    &:disabled {
+        cursor: default;
+        opacity: 0.3;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            font-weight: 600;
+            color: var(--brand-hover);
+            background-color: transparent;
+            border-color: var(--action-primary);
+        }
+
+
+    }
+}
+
+.swiper-btn {
+    border-radius: 4px;
+    color: var(--text-inverse);
+    background: var(--action-primary);
+    border: 2px solid transparent;
+    box-shadow: none;
+    transition: background-color 0.3s ease-out, color 0.3s ease-out, opacity 0.3s ease-out, transform 0.3s ease;
+    opacity: 0.8;
+    box-shadow: transparent;
+    cursor: pointer;
+
+    .icon {
+        width: clamp(36px, 4vw, 52px);
+        height: clamp(36px, 4vw, 52px);
+    }
+
+
+
+    &:disabled {
+        cursor: default;
+        background: var(--action-primary-soft);
+        opacity: 0.3;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover:not(:disabled) {
+            opacity: 1;
+            box-shadow: var(--shadow-focus);
+            color: $color-white;
+            transform: scale(1.06);
+        }
+
+    }
+
+    &:active:not(:disabled) {
+        color: $color-white;
+        transform: scale(0.96);
+    }
+}
+.admin-btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    transform 0.4s ease;
+  &:hover {
+    border-color: var(--brand);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+.point {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: $color-white;
+    transform: scale(1);
+    transition: transform 0.3s ease-out;
+    cursor: pointer;
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 40px;
+        height: 40px;
+        border: 1px solid $color-white;
+        border-radius: 50%;
+        opacity: 0;
+        will-change: transform, opacity ,border-width;
+        transform: translate3d(-50%, -50%, 0) scale(1);
+        animation: pointscale 1.2s linear infinite;
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+        &:hover::after {
+            animation: pointscale 0.8s linear infinite;
+        }
+    }
+
+    @keyframes pointscale {
+        0% {
+            border-width: 1px;
+            transform: translate3d(-50%, -50%, 0) scale(1);
+            opacity: 1;
+        }
+
+        80% {
+            border-width: 4px;
+            transform: translate3d(-50%, -50%, 0) scale(2);
+            opacity: 0;
+        }
+
+        100% {
+            border-width: 4px;
+            transform: translate3d(-50%, -50%, 0) scale(2);
+            opacity: 0;
+        }
+    }
+
+    &:active {
+        transform: scale(0.88)
+    }
+}
+
+
+
+
+
+
+input[type="checkbox"] {
+    accent-color: var(--brand);
+    /* 你想要的顏色（藍色示範） */
+}
+
+input {
+    caret-color: var(--brand);
+    outline: none;
+    border-width: 1px;
+    padding: 0px 8px;
+    border-style: none;
+
+    &::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    //顏色設定
+    // &:hover,&:focus {
+    //     background-color: var(--bg-surface-soft);
+    //     outline: 2px solid var(--brand);
+    //   }
+}
+
+
+
+ul,
+li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-inline: $padding-RWD;
+}

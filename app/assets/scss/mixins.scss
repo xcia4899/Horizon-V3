@@ -1,0 +1,18 @@
+@mixin center {
+    display: grid;
+    place-items: center;
+}
+
+@mixin baseTransition($property: all, $time: 0.4s, $ease: ease) {
+    transition: $property $time $ease;
+}
+//自動隱藏多於字段
+@mixin line-clamp($lines) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+// .card-text {
+//   @include line-clamp(2);
+// }

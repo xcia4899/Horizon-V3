@@ -1,0 +1,341 @@
+<template>
+  <section class="main-sidebar" :class="{ isClose: isSidebarClose }">
+    <div class="sidebar-title">篩選</div>
+    <ul class="sidebar-groups">
+      <li class="sidebar-group">
+        <label class="sidebar-sale-switch">
+          <h4>特價商品</h4>
+          <el-switch
+            :width="60"
+            size="large"
+            :model-value="onsale"
+            :active-action-icon="View"
+            :inactive-action-icon="Hide"
+            @change="updateOnsale"
+          />
+        </label>
+      </li>
+      <li
+        v-for="(item, index) in sidebarList"
+        :key="item.key"
+        class="sidebar-group"
+        :class="{ underline: isSectionOpen(index) }"
+      >
+        <div class="sidebar-group-title" @click="toggleSection(index)">
+          <h4 class="title">{{ item.title }}</h4>
+          <icon
+            class="icon"
+            :class="{ rotate: isSectionOpen(index) }"
+            name="icon-park-solid:up-c"
+            size="24"
+          />
+        </div>
+
+        <ul
+          class="sidebar-group-options"
+          :class="{ onOpen: isSectionOpen(index) }"
+        >
+          <li
+            v-for="(options, i) in item.options"
+            :key="i"
+            class="options-item"
+          >
+            <label class="checkbox-area">
+              <input
+                v-model="modelSelectTags"
+                class="checkbox"
+                type="checkbox"
+                :value="options.value"
+              />
+              {{ options.label }}
+            </label>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div class="mobile-btnArea" :class="{ btnAreaShow: isSidebarClose }">
+      <div class="reset" @click="resetTags">
+        <h4>重置</h4>
+        <Icon class="icon" name="iconoir:cancel" size="20" />
+      </div>
+      <button class="Submit btn" @click="toggleFilter">確定</button>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { computed, toRefs, nextTick } from "vue";
+import type { SidebarList } from "~/types/ui/sidebar";
+import { Hide, View } from "@element-plus/icons-vue";
+const props = defineProps<{
+  sidebarList: SidebarList[];
+  openSections: number[];
+  selectTags: (string | number)[];
+  onsale: boolean | number | string;
+  isSidebarClose: boolean;
+  toggleFilter: () => void;
+  collapseAllSections: () => void;
+}>();
+
+const emit = defineEmits<{
+  (e: "update:selectTags", value: (string | number)[]): void;
+  (e: "update:onsale", value: boolean | number | string): void;
+  (e: "toggle-section", index: number): void;
+}>();
+
+const { sidebarList, openSections, toggleFilter, collapseAllSections } =
+  toRefs(props);
+
+//子元件用 modelSelectTags 直接雙向綁定v-model:selectTags
+const modelSelectTags = computed({
+  // 讀取父元件傳下來
+  get: () => props.selectTags,
+  // emit 回傳父元件更新 selectTags
+  set: (val) => emit("update:selectTags", val),
+});
+// 通知父元件切換 sidebar 區塊開關
+const toggleSection = (index: number) => {
+  emit("toggle-section", index);
+};
+// 判斷某個 sidebar 區塊是否展開
+const isSectionOpen = (index: number) => openSections.value.includes(index);
+
+//清除TAGS 關閉sidebar 關閉sidebar所有展開
+const resetTags = async () => {
+  emit("update:selectTags", []);
+  await nextTick();
+  await looding(100);
+  toggleFilter.value();
+  collapseAllSections.value();
+};
+
+const updateOnsale = (val: string | number | boolean) => {
+  // 轉成 boolean，避免上層傳入 0/1、"true"/"false" 時出問題
+  const next = typeof val === "boolean" ? val : Boolean(val);
+  emit("update:onsale", next);
+};
+</script>
+
+<style scoped lang="scss">
+.main-sidebar {
+  width: clamp(186px, 25%, 280px);
+  max-width: 280px;
+  overflow: hidden;
+  opacity: 1;
+  /*   color: var(--text-primary); */
+  background: var(--bg-surface);
+  padding-right: 32px;
+  transition:
+    max-width 0.3s ease-out,
+    opacity 0.2s ease-out,
+    padding-right 0.2s ease-out 0.1s;
+  &.isClose {
+    opacity: 0;
+
+    max-width: 0px;
+    padding-right: 0px;
+  }
+
+  .sidebar-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  .sidebar-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .sidebar-group {
+      border-bottom: 2px dashed var(--border-default);
+      transition:
+        border-style 0.4s ease-out,
+        border-color 0.4s ease-out;
+      &.underline {
+        border-bottom-style: solid;
+        border-color: var(--border-soft);
+      }
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          border-bottom-style: solid;
+          border-color: var(--border-soft);
+        }
+      }
+      .sidebar-sale-switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-block: 12px;
+
+        cursor: pointer;
+        h4 {
+          cursor: pointer;
+        }
+        .el-switch {
+          --el-switch-on-color: var(--brand);
+          --el-switch-off-color: var(--bg-surface-secondary);
+          --el-switch-border-color: #5f5f5f;
+          // --el-switch-button-color: #333;
+        }
+        .el-switch_label {
+          font-size: 20px;
+          color: var(--text-primary);
+        }
+      }
+      .sidebar-group-title {
+        padding: 8px 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        .title {
+          cursor: pointer;
+        }
+        .icon {
+          color: var(--brand-soft);
+          transition: transform 0.3s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            .icon {
+              color: var(--brand);
+            }
+          }
+        }
+        .icon.rotate {
+          color: var(--brand);
+          transform: rotate(180deg);
+        }
+      }
+      .sidebar-group-options {
+        max-height: 0px;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out;
+        .options-item {
+          display: flex;
+          align-items: center;
+          padding: 6px 8px;
+          margin-block: 4px;
+          border-radius: 4px;
+          transition: background-color 0.2s ease-out;
+          cursor: pointer;
+          .checkbox-area {
+            width: 100%;
+          }
+          .checkbox-area,
+          .checkbox {
+            cursor: pointer;
+          }
+          @media (hover: hover) and (pointer: fine) {
+            &:hover {
+              background: var(--bg-surface-soft);
+              color: var(--brand-hover);
+            }
+          }
+          &:active {
+            background: var(--bg-surface-soft);
+            color: var(--brand-hover);
+          }
+        }
+        &.onOpen {
+          max-height: 400px;
+        }
+      }
+    }
+  }
+  .mobile-btnArea {
+    position: fixed;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 16px 0px 48px;
+    font-size: 16px;
+    visibility: visible;
+    opacity: 1;
+    // z-index: 100;
+    .reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      h4 {
+        padding-inline: 3px;
+      }
+      .icon {
+        color: var(--state-danger);
+      }
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+    .Submit {
+      width: 90%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    position: fixed;
+    left: 0;
+    top: 0px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    z-index: 200;
+    padding: 32px 48px;
+    transition:
+      max-height 0.3s ease-out,
+      opacity 0.2s ease-out;
+    .sidebar-title {
+      display: flex;
+    }
+    .sidebar-groups {
+      flex: 1;
+      overflow-y: scroll;
+      scrollbar-width: none;
+      /* 隱藏滾輪 */
+      gap: 8px;
+      max-height: calc(100% - 200px);
+      top: 0;
+      bottom: 120px;
+      .sidebar-group {
+        .sidebar-group-options {
+          .options-item {
+            padding-block: 10px;
+          }
+        }
+      }
+    }
+    .mobile-btnArea {
+      display: flex;
+      transition: opacity 0.5s ease-out 0.4s;
+      border-top: 1px solid var(--border-default);
+      &.btnAreaShow {
+        visibility: hidden;
+        opacity: 0;
+      }
+    }
+    &.isClose {
+      max-height: 0%;
+      z-index: 10;
+      visibility: hidden;
+      padding-right: 0px;
+      opacity: 0;
+    }
+  }
+}
+</style>
