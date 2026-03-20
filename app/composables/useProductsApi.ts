@@ -1,5 +1,5 @@
 import type { Database } from "@/types/database.types";
-// import type { Product } from "~/types/data/products";
+
 type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 
 // interface ProductsResponse {
