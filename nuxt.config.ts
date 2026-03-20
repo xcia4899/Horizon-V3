@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // 公開變數：對應 NUXT_PUBLIC_BACKEND_BASE_URL，用於前端 API 呼叫
-      backendBaseURL: "",
+      apiBase: "",
     },
   },
 

@@ -519,7 +519,7 @@ export const productSeed = [
   },
   {
     id: "RAZER-1004",
-    brand: "Razer",
+    brand: "RAZER",
     name: "Gigantus-V2 滑鼠墊",
     subtitle: "頂級布面，滑順流暢體驗",
     category: "滑鼠墊",
@@ -1308,8 +1308,8 @@ export const productSeed = [
     tags: ["藍牙耳機", "降噪耳機", "⭐⭐⭐⭐⭐"],
   },
   {
-    id: "Razer-1011",
-    brand: "Razer",
+    id: "RAZER-1011",
+    brand: "RAZER",
     name: "Seiren-V3 Mini",
     subtitle: "專為內容創作者打造的迷你麥克風",
     category: "麥克風",
