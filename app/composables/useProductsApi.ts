@@ -5,7 +5,6 @@ type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 // interface ProductsResponse {
 //   data: Product[];
 // }
-
 export const useProductsApi = () => {
   const api = useApi();
 

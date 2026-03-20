@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { data, error } = await supabase
     .from("products")
     .select("*")
-    // .order("id", { ascending: true });
+    .order("id", { ascending: true });
 
   if (error) {
     throw createError({
