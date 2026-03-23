@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
     .select();
 
   if (error) {
-    console.error("seed-products error:", error);
     throw createError({
       statusCode: 500,
       statusMessage: error.message,

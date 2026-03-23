@@ -14,7 +14,7 @@
         <span>{{ item.id }}</span> <span>{{ item.brand }}</span>
         <span>{{ item.name }}</span> <span> ${{ item.price }}</span>
         <button class="btn">刪除</button>
-        <button class="btn">修改</button>
+        <button class="btn">編輯</button>
       </li>
     </ul>
   </section>
@@ -23,8 +23,9 @@
 <script setup lang="ts">
 // import type { Database } from "@/types/database.types";
 import type { Product } from "~/types/data/products";
+
 //api集中管理
-const { getProducts } = useProductsApi();
+const useProducts = useProductsApi();
 
 // type Product = Database["public"]["Tables"]["products"]["Row"];
 
@@ -36,8 +37,7 @@ const fetchProducts = async () => {
   pending.value = true;
   errorMsg.value = "";
   try {
-    // const result = await $fetch("/api/products/");
-    const result = await getProducts();
+    const result = await useProducts.getProducts();
     products.value = result.data ?? [];
   } catch (error: unknown) {
     console.error("讀取 products 失敗：", error);
@@ -50,18 +50,14 @@ const fetchProducts = async () => {
     pending.value = false;
   }
 };
+onMounted(fetchProducts);
 
 const seedProducts = async () => {
   pending.value = true;
   errorMsg.value = "";
-
   try {
-    const result = await $fetch("/api/seed-products", {
-      method: "POST",
-    });
-
-    console.log("匯入成功", result);
-
+    await useProducts.setSeedProduct();
+    console.log("匯入成功");
     await fetchProducts();
   } catch (error: unknown) {
     console.error("匯入失敗", error);
@@ -75,7 +71,7 @@ const seedProducts = async () => {
     pending.value = false;
   }
 };
-onMounted(fetchProducts);
+
 </script>
 <style lang="scss">
 .items {
