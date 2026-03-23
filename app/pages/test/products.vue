@@ -6,14 +6,14 @@
       <button class="btn" @click="seedProducts">重製資料</button>
     </div>
     <br />
+    <p v-if="errorMsg">{{ errorMsg }}</p>
     <p v-if="pending">資料讀取中...</p>
-    <p v-else-if="errorMsg">{{ errorMsg }}</p>
 
     <ul v-else class="items">
       <li v-for="item in products" :key="item.id" class="item">
         <span>{{ item.id }}</span> <span>{{ item.brand }}</span>
         <span>{{ item.name }}</span> <span> ${{ item.price }}</span>
-        <button class="btn">刪除</button>
+        <button class="btn" @click="deleteProduct(item.id)">刪除</button>
         <button class="btn">編輯</button>
       </li>
     </ul>
@@ -72,6 +72,20 @@ const seedProducts = async () => {
   }
 };
 
+const deleteProduct = async (id: string) => {
+  try {
+    await useProducts.deleteProduct(id);
+    console.log("刪除成功:", id);
+    products.value = products.value.filter((p) => p.id !== id);
+    
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      errorMsg.value = error.message;
+    } else {
+      errorMsg.value = "刪除失敗";
+    }
+  }
+};
 </script>
 <style lang="scss">
 .items {

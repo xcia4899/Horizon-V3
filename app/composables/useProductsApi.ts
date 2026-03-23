@@ -16,7 +16,10 @@ export const useProductsApi = () => {
       data: (result.data ?? []).map(mapProduct),
     };
   };
-
+  //刪除
+  const deleteProduct = async (id:string)=>{
+    return await api(`/api/products/${id}`, { method: "DELETE" });
+  }
   //重置
   const resetProducts = async () => {
     const result = await api<{ data: ProductRow[] }>("/api/products/reset", {
@@ -34,5 +37,6 @@ export const useProductsApi = () => {
     getProducts,
     resetProducts,
     setSeedProduct,
+    deleteProduct
   };
 };
