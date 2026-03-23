@@ -29,7 +29,7 @@ export interface Product {
   subtitle: string;
   category: string;
 
-  discount: number;
+  discount?: number;
   price: number;
   onsale: boolean;
 
@@ -42,3 +42,7 @@ export interface Product {
 
   tags: string[];
 }
+export type ProductForm = Pick<
+  Product,
+  "id" | "name" | "brand" | "price" | "discount" | "onsale"|"images" |"details"|"category"
+>;
