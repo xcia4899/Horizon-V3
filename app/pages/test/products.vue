@@ -66,13 +66,28 @@
         <el-form-item label="ID">
           <el-input v-model="form.id" disabled />
         </el-form-item>
-
+        <el-form-item label="品牌">
+          <el-input v-model="form.brand" />
+        </el-form-item>
         <el-form-item label="名稱">
           <el-input v-model="form.name" />
         </el-form-item>
-
-        <el-form-item label="品牌">
-          <el-input v-model="form.brand" />
+        <el-form-item label="輔助標題">
+          <el-input v-model="form.subtitle" />
+        </el-form-item>
+        <el-form-item label="價格">
+          <div style="display: flex; gap: 10px; width: 100%">
+            <span>原價:</span>
+            <el-input-number v-model="form.price" :min="0" style="flex: 1" />
+            <span>特價:</span>
+            <el-input-number v-model="form.discount" :min="0" style="flex: 1" />
+          </div>
+          <el-switch
+            v-model="form.onsale"
+            active-text="有折扣"
+            inactive-text="無折扣"
+            style="margin-top: 8px"
+          />
         </el-form-item>
 
         <el-form-item label="圖片">
@@ -100,8 +115,13 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="價格">
-          <el-input-number v-model="form.price" :min="0" />
+        <el-form-item label="敘述">
+          <el-input
+            v-model="form.description"
+            type="textarea"
+            :rows="4"
+            placeholder="請輸入商品敘述"
+          />
         </el-form-item>
 
         <el-form-item label="類型">
@@ -138,7 +158,6 @@ import type { UploadProps, UploadUserFile } from "element-plus";
 import type { Product, ProductForm } from "~/types/data/products";
 import { detailPresets } from "@/constants/detailPresets";
 import { highlightsPreset } from "@/constants/highlightsPreset";
-
 
 // API
 const useProducts = useProductsApi();
@@ -215,9 +234,10 @@ const resetForm = () => {
 const createProduct = () => {
   mode.value = "create";
   resetForm();
-  form.id = `product-${productLength.value}`;
+  form.id = `brand-${productLength.value}`;
   dialogVisible.value = true;
 };
+
 watch([() => form.brand, () => productLength.value], ([brand, length]) => {
   if (!brand || mode.value !== "create") return;
   const setBrand = brand.trim().toUpperCase().replace(/\s+/g, "-");
