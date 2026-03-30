@@ -1,5 +1,5 @@
 // useProducts.ts
-import productList from "@/assets/data/json/productList.json";
+import productList from "@/assets/data/productList.json";
 import type {Product} from "~/types/data/products"
 
 

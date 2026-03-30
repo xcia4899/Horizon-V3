@@ -2,47 +2,62 @@ export interface DetailContent {
   title: string;
   text: string[];
 }
+
 export interface ProductDetail {
   section: string;
   content: DetailContent[];
 }
+
 export interface FeatureItem {
-  id: string;         
-  title:string;
-  subtitle?: string;   
-  icon?: string;       
-  desc?: string[];      
+  id: string;
+  title: string;
+  subtitle?: string;
+  icon?: string;
+  desc?: string[];
 }
-export interface Highlights{
-  title:string;
-  description:string;
-  items:FeatureItem[]
+
+export interface Highlights {
+  title: string;
+  description: string;
+  items: FeatureItem[];
 }
+
 export interface ProductImages {
   main: string;
   thumbnails: string[];
 }
+
 export interface Product {
   id: string;
   brand: string;
   name: string;
   subtitle: string;
   category: string;
-
-  discount?: number;
+  discount: number;
   price: number;
   onsale: boolean;
-
   color: string;
   description: string;
-
   images: ProductImages;
   details: ProductDetail[];
-  highlights:Highlights
-
+  highlights: Highlights;
   tags: string[];
 }
+
 export type ProductForm = Pick<
   Product,
-  "id" | "name" | "brand" | "price" | "discount" | "onsale"|"images" |"details"|"category"
+  | "id"
+  | "name"
+  | "brand"
+  | "subtitle"
+  | "category"
+  | "price"
+  | "discount"
+  | "onsale"
+  | "color"
+  | "description"
+  | "images"
+  | "details"
+  | "highlights"
+  | "tags"
 >;

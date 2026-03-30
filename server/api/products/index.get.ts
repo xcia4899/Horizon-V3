@@ -4,11 +4,11 @@ import type { Database } from "@/types/database.types";
 export default defineEventHandler(async (event) => {
   const supabase = await serverSupabaseClient<Database>(event);
 
-  const { data, error:getError } = await supabase
+  const { data, error: getError } = await supabase
     .from("products")
     .select("*")
     .order("id", { ascending: true });
-
+  
   if (getError) {
     throw createError({
       statusCode: 500,
