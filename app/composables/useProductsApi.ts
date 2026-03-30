@@ -20,14 +20,14 @@ export const useProductsApi = () => {
   const deleteProduct = async (id:string)=>{
     return await api(`/api/products/${id}`, { method: "DELETE" });
   }
-  //重置
+  //重置資料
   const resetProducts = async () => {
     const result = await api<{ data: ProductRow[] }>("/api/products/reset", {
       method: "POST",
     });
     return { data: (result.data ?? []).map(mapProduct) };
   };
-  //建立資料
+  //建立原始資料
   const setSeedProduct = async () =>
     await api("/api/products/seed-products", {
       method: "POST",

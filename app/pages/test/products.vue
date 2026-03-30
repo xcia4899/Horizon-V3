@@ -19,7 +19,23 @@
       <p v-if="pending">資料更新中...</p>
 
       <ul v-else class="items">
-        <li v-for="item in products" :key="item.id" class="item">
+        <li  class="from-item">
+          <div style="width: 60px" >大圖</div>
+          <div style="width: 40px" >小圖</div>
+
+          <span>ID</span>
+          <span>brand</span>
+          <span>name</span>
+          <span>price</span>
+          <span>category</span>
+          <span>description</span>
+          <span >details</span>
+          <span >highlights</span>
+
+          <button class="btn" >刪除</button>
+          <button class="btn" >編輯</button>
+        </li>
+        <li v-for="item in products" :key="item.id" class="from-item">
           <img :src="item.images.main" style="width: 60px" />
           <img
             v-if="item.images.thumbnails?.[0]"
@@ -31,7 +47,9 @@
           <span>{{ item.name }}</span>
           <span>${{ item.price }}</span>
           <span>{{ item.category }}</span>
-          <span v-if="item.details?.length">{{ item.category }}細項</span>
+          <span v-if="item.description">true</span>
+          <span v-if="item.details?.length">true</span>
+          <span v-if="item.highlights">true</span>
 
           <button class="btn" @click="deleteProduct(item.id)">刪除</button>
           <button class="btn" @click="editProduct(item)">編輯</button>
@@ -42,7 +60,6 @@
     <el-dialog
       v-model="dialogVisible"
       :title="mode === 'create' ? '新增商品' : '編輯商品'"
-      width="500"
       @closed="resetForm"
     >
       <el-form :model="form" label-width="80px">
@@ -54,9 +71,10 @@
           <el-input v-model="form.name" />
         </el-form-item>
 
-        <el-form-item label="主圖">
+        <el-form-item label="圖片">
           <el-upload
             v-model:file-list="mainFileList"
+            class="main-upload"
             list-type="picture-card"
             :auto-upload="false"
             :limit="1"
@@ -65,11 +83,9 @@
           >
             <el-icon><Plus /></el-icon>
           </el-upload>
-        </el-form-item>
-
-        <el-form-item label="縮圖">
           <el-upload
             v-model:file-list="thumbFileList"
+            class="main-upload"
             list-type="picture-card"
             :auto-upload="false"
             :limit="4"
@@ -121,6 +137,7 @@ import type { UploadProps, UploadUserFile } from "element-plus";
 
 import type { Product, ProductForm } from "~/types/data/products";
 import { detailPresets } from "@/constants/detailPresets";
+import { highlightsPreset } from "@/constants/highlightsPreset";
 
 // API
 const useProducts = useProductsApi();
@@ -142,8 +159,7 @@ const mode = ref<"create" | "edit">("create");
 // upload file list
 const mainFileList = ref<UploadUserFile[]>([]);
 const thumbFileList = ref<UploadUserFile[]>([]);
-
-// 表單
+//表單
 const form = reactive<ProductForm>({
   id: "",
   name: "",
@@ -160,11 +176,7 @@ const form = reactive<ProductForm>({
     thumbnails: [],
   },
   details: [],
-  highlights: {
-    title: "",
-    description: "",
-    items: [],
-  },
+  highlights: structuredClone(highlightsPreset),
   tags: [],
 });
 
@@ -244,7 +256,7 @@ const editProduct = (product: Product) => {
 
   dialogVisible.value = true;
 };
-const dialogImageVisible = ref(false);
+
 // 主圖：移除
 const handleMainRemove: UploadProps["onRemove"] = () => {
   form.images.main = "";
@@ -305,12 +317,24 @@ const toProduct = (formData: ProductForm): Product => {
       thumbnails: [...formData.images.thumbnails],
     },
 
-    details: structuredClone(formData.details),
+    details: formData.details.map((detail) => ({
+      section: detail.section,
+      content: detail.content.map((content) => ({
+        title: content.title,
+        text: [...content.text],
+      })),
+    })),
 
     highlights: {
       title: formData.highlights.title,
       description: formData.highlights.description,
-      items: structuredClone(formData.highlights.items),
+      items: formData.highlights.items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        subtitle: item.subtitle ?? "",
+        icon: item.icon ?? "",
+        desc: [...(item.desc ?? [])],
+      })),
     },
 
     tags: [...formData.tags],
@@ -452,8 +476,9 @@ onMounted(fetchProducts);
   gap: 4px;
 }
 
-.item {
+.from-item {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   align-items: center;
   border: 1px solid #333;
@@ -501,5 +526,9 @@ onMounted(fetchProducts);
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #dcdfe6;
+}
+.main-upload :deep(.el-upload-list__item-preview) {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 </style>
