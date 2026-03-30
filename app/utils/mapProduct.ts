@@ -40,13 +40,13 @@ const isStringArray = (value: unknown): value is string[] => {
 };
 
 const mapImages = (value: unknown): ProductImages => {
-  const raw = (value ?? {}) as RawProductImages;
+  const raw = value as RawProductImages | undefined;
 
   return {
-    main: typeof raw.main === "string" && raw.main.trim()
+    main: raw?.main?.trim()
       ? raw.main
-      : "/images/default.jpg",
-    thumbnails: isStringArray(raw.thumbnails) ? raw.thumbnails : [],
+      : "https://picsum.photos/seed/default/400/300",
+    thumbnails: isStringArray(raw?.thumbnails) ? raw!.thumbnails : [],
   };
 };
 

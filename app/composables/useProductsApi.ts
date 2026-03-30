@@ -1,7 +1,7 @@
 import type { Database } from "@/types/database.types";
 
 type ProductRow = Database["public"]["Tables"]["products"]["Row"];
-
+type ProductInsert = Database["public"]["Tables"]["products"]["Insert"];
 // interface ProductsResponse {
 //   data: Product[];
 // }
@@ -16,10 +16,17 @@ export const useProductsApi = () => {
       data: (result.data ?? []).map(mapProduct),
     };
   };
+  //新增資料
+  const createProduct = async (body: ProductInsert) => {
+  return await api("/api/products", {
+    method: "POST",
+    body,
+  });
+};
   //刪除
-  const deleteProduct = async (id:string)=>{
+  const deleteProduct = async (id: string) => {
     return await api(`/api/products/${id}`, { method: "DELETE" });
-  }
+  };
   //重置資料
   const resetProducts = async () => {
     const result = await api<{ data: ProductRow[] }>("/api/products/reset", {
@@ -37,6 +44,7 @@ export const useProductsApi = () => {
     getProducts,
     resetProducts,
     setSeedProduct,
-    deleteProduct
+    deleteProduct,
+    createProduct,
   };
 };

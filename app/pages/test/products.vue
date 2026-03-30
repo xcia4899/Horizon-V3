@@ -19,9 +19,9 @@
       <p v-if="pending">資料更新中...</p>
 
       <ul v-else class="items">
-        <li  class="from-item">
-          <div style="width: 60px" >大圖</div>
-          <div style="width: 40px" >小圖</div>
+        <li class="from-item">
+          <div style="width: 60px">大圖</div>
+          <div style="width: 40px">小圖</div>
 
           <span>ID</span>
           <span>brand</span>
@@ -29,11 +29,11 @@
           <span>price</span>
           <span>category</span>
           <span>description</span>
-          <span >details</span>
-          <span >highlights</span>
+          <span>details</span>
+          <span>highlights</span>
 
-          <button class="btn" >刪除</button>
-          <button class="btn" >編輯</button>
+          <button class="btn">刪除</button>
+          <button class="btn">編輯</button>
         </li>
         <li v-for="item in products" :key="item.id" class="from-item">
           <img :src="item.images.main" style="width: 60px" />
@@ -71,6 +71,10 @@
           <el-input v-model="form.name" />
         </el-form-item>
 
+        <el-form-item label="品牌">
+          <el-input v-model="form.brand" />
+        </el-form-item>
+
         <el-form-item label="圖片">
           <el-upload
             v-model:file-list="mainFileList"
@@ -94,10 +98,6 @@
           >
             <el-icon><Plus /></el-icon>
           </el-upload>
-        </el-form-item>
-
-        <el-form-item label="品牌">
-          <el-input v-model="form.brand" />
         </el-form-item>
 
         <el-form-item label="價格">
@@ -138,6 +138,7 @@ import type { UploadProps, UploadUserFile } from "element-plus";
 import type { Product, ProductForm } from "~/types/data/products";
 import { detailPresets } from "@/constants/detailPresets";
 import { highlightsPreset } from "@/constants/highlightsPreset";
+
 
 // API
 const useProducts = useProductsApi();
@@ -217,7 +218,12 @@ const createProduct = () => {
   form.id = `product-${productLength.value}`;
   dialogVisible.value = true;
 };
-
+watch([() => form.brand, () => productLength.value], ([brand, length]) => {
+  if (!brand || mode.value !== "create") return;
+  const setBrand = brand.trim().toUpperCase().replace(/\s+/g, "-");
+  const number = String(length).padStart(2, "0");
+  form.id = `${setBrand}-${number}`;
+});
 // 開啟編輯
 const editProduct = (product: Product) => {
   mode.value = "edit";
@@ -301,17 +307,7 @@ const handleThumbChange: UploadProps["onChange"] = (
 // ProductForm -> Product
 const toProduct = (formData: ProductForm): Product => {
   return {
-    id: formData.id,
-    name: formData.name,
-    brand: formData.brand,
-    subtitle: formData.subtitle,
-    category: formData.category,
-    price: formData.price,
-    discount: formData.discount,
-    onsale: formData.onsale,
-    color: formData.color,
-    description: formData.description,
-
+    ...form,
     images: {
       main: formData.images.main,
       thumbnails: [...formData.images.thumbnails],
@@ -345,8 +341,10 @@ const toProduct = (formData: ProductForm): Product => {
 const submitForm = async () => {
   try {
     const productData = toProduct({ ...form });
+    const insertData = toProductInsert(productData);
+
     if (mode.value === "create") {
-      // 之後若要串 API，可改成 await useProducts.createProduct(productData)
+      await useProducts.createProduct(insertData);
       products.value.push(productData);
       ElMessage.success("新增成功");
     } else {
