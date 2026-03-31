@@ -19,7 +19,7 @@
       <p v-if="pending">資料更新中...</p>
 
       <ul v-else class="items">
-        <li class="from-item">
+        <li class="form-item">
           <span>ID</span>
           <span style="width: 60px">大圖</span>
           <span style="width: 40px">小圖</span>
@@ -31,11 +31,12 @@
           <span>description</span>
           <span>details</span>
           <span>highlights</span>
+          <span>Tags</span>
 
           <button class="btn">刪除</button>
           <button class="btn">編輯</button>
         </li>
-        <li v-for="item in products" :key="item.id" class="from-item">
+        <li v-for="item in products" :key="item.id" class="form-item">
           <span>{{ item.id }}</span>
           <img :src="item.images.main" style="width: 60px" />
           <img
@@ -50,6 +51,7 @@
           <span v-if="item.description">true</span>
           <span v-if="item.details?.length">true</span>
           <span v-if="item.highlights">true</span>
+          <span v-if="item.tags?.length">true</span>
 
           <button class="btn" @click="deleteProduct(item.id)">刪除</button>
           <button class="btn" @click="editProduct(item)">編輯</button>
@@ -60,75 +62,99 @@
     <el-dialog
       v-model="dialogVisible"
       :title="mode === 'create' ? '新增商品' : '編輯商品'"
+      class="product-dialog"
       @closed="resetForm"
     >
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="ID">
-          <el-input v-model="form.id" disabled />
+      <el-form :model="form" label-width="80px" class="product-form">
+        <el-form-item label="ID" class="form-item form-item-id">
+          <el-input v-model="form.id" disabled class="form-input" />
         </el-form-item>
-        <el-form-item label="品牌">
-          <el-input v-model="form.brand" />
+
+        <el-form-item label="品牌" class="form-item form-item-brand">
+          <el-input v-model="form.brand" class="form-input" />
         </el-form-item>
-        <el-form-item label="名稱">
-          <el-input v-model="form.name" />
+
+        <el-form-item label="名稱" class="form-item form-item-name">
+          <el-input v-model="form.name" class="form-input" />
         </el-form-item>
-        <el-form-item label="輔助標題">
-          <el-input v-model="form.subtitle" />
+
+        <el-form-item label="輔助標題" class="form-item form-item-subtitle">
+          <el-input v-model="form.subtitle" class="form-input" />
         </el-form-item>
-        <el-form-item label="價格">
-          <div style="display: flex; gap: 10px; width: 100%">
-            <span>原價:</span>
-            <el-input-number v-model="form.price" :min="0" style="flex: 1" />
-            <span>特價:</span>
-            <el-input-number v-model="form.discount" :min="0" style="flex: 1" />
+
+        <el-form-item label="價格" class="form-item form-item-price">
+          <div class="price-group">
+            <span class="price-label">原價:</span>
+            <el-input-number
+              v-model="form.price"
+              :min="0"
+              class="price-input"
+            />
+            <span class="price-label">特價:</span>
+            <el-input-number
+              v-model="form.discount"
+              :min="0"
+              class="price-input"
+            />
           </div>
+
           <el-switch
             v-model="form.onsale"
             active-text="有折扣"
             inactive-text="無折扣"
-            style="margin-top: 8px"
+            class="price-switch"
           />
         </el-form-item>
 
-        <el-form-item label="圖片">
+        <el-form-item label="主要圖片" class="form-item upload-images">
           <el-upload
             v-model:file-list="mainFileList"
-            class="main-upload"
+            class="upload upload-main"
             list-type="picture-card"
             :auto-upload="false"
+            :multiple="false"
             :limit="1"
             :on-remove="handleMainRemove"
             :on-change="handleMainChange"
           >
-            <el-icon><Plus /></el-icon>
+            <el-icon class="upload-icon">
+              <Plus />
+            </el-icon>
           </el-upload>
+        </el-form-item>
+
+        <el-form-item label="輔助圖片" class="form-item upload-images">
           <el-upload
             v-model:file-list="thumbFileList"
-            class="main-upload"
+            class="upload upload-thumb"
             list-type="picture-card"
             :auto-upload="false"
+            :multiple="true"
             :limit="4"
             :on-remove="handleThumbRemove"
             :on-change="handleThumbChange"
           >
-            <el-icon><Plus /></el-icon>
+            <el-icon  class="upload-icon">
+              <Plus />
+            </el-icon>
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="敘述">
+        <el-form-item label="敘述" class="form-item form-item-description">
           <el-input
             v-model="form.description"
             type="textarea"
             :rows="4"
             placeholder="請輸入商品敘述"
+            class="form-textarea"
           />
         </el-form-item>
 
-        <el-form-item label="類型">
+        <el-form-item label="類型" class="form-item form-item-category">
           <el-select
             v-model="form.category"
             placeholder="選擇種類"
-            style="width: 115px"
+            class="form-select"
           >
             <el-option label="滑鼠" value="滑鼠" />
             <el-option label="鍵盤" value="鍵盤" />
@@ -137,13 +163,37 @@
             <el-option label="喇叭" value="喇叭" />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="TAG" class="form-item form-item-tags">
+          <el-select
+            v-model="form.tags"
+            multiple
+            filterable
+            collapse-tags
+            collapse-tags-tooltip
+            :max-collapse-tags="2"
+            placeholder="可多選TAG"
+            class="form-select form-select-tags"
+          >
+            <el-option
+              v-for="item in tagOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
 
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitForm">
-          {{ mode === "create" ? "新增" : "儲存" }}
-        </el-button>
+        <div class="dialog-footer">
+          <el-button class="btn-cancel" @click="dialogVisible = false">
+            取消
+          </el-button>
+          <el-button class="btn-submit" type="primary" @click="submitForm">
+            {{ mode === "create" ? "新增" : "儲存" }}
+          </el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -158,6 +208,8 @@ import type { UploadProps, UploadUserFile } from "element-plus";
 import type { Product, ProductForm } from "~/types/data/products";
 import { detailPresets } from "@/constants/detailPresets";
 import { highlightsPreset } from "@/constants/highlightsPreset";
+import { useTags } from "@/composables/useTags";
+import type { SidebarList } from "~/types/ui/sidebar";
 
 // API
 const useProducts = useProductsApi();
@@ -166,6 +218,7 @@ const useProducts = useProductsApi();
 const products = ref<Product[]>([]);
 const pending = ref(false);
 const errorMsg = ref("");
+const tagSource = ref<SidebarList[]>(useTags());
 
 // 流水號
 const productLength = computed(
@@ -288,7 +341,6 @@ const handleMainRemove: UploadProps["onRemove"] = () => {
   form.images.main = "";
   mainFileList.value = [];
 };
-
 // 主圖：變更
 const handleMainChange: UploadProps["onChange"] = (uploadFile) => {
   if (uploadFile.raw && !uploadFile.url) {
@@ -299,7 +351,6 @@ const handleMainChange: UploadProps["onChange"] = (uploadFile) => {
     ? [{ name: uploadFile.name, url: uploadFile.url }]
     : [];
 };
-
 // 縮圖：移除
 const handleThumbRemove: UploadProps["onRemove"] = (
   _uploadFile,
@@ -309,7 +360,6 @@ const handleThumbRemove: UploadProps["onRemove"] = (
     .map((file) => file.url)
     .filter((url): url is string => !!url);
 };
-
 // 縮圖：變更
 const handleThumbChange: UploadProps["onChange"] = (
   uploadFile,
@@ -356,7 +406,6 @@ const toProduct = (formData: ProductForm): Product => {
     tags: [...formData.tags],
   };
 };
-
 // 送出
 const submitForm = async () => {
   try {
@@ -395,6 +444,16 @@ watch(
     form.details = structuredClone(detailPresets[val] ?? []);
   },
 );
+// 添加tag-------
+const tagOptions = computed(() => {
+  return tagSource.value
+    .filter((item: SidebarList) => item.key !== "price" && item.key !== "brand")
+    .flatMap((item) => item.options)
+    .map((option) => ({
+      label: String(option.label),
+      value: String(option.value),
+    }));
+});
 
 // 讀取商品
 const fetchProducts = async () => {
@@ -491,63 +550,52 @@ onMounted(fetchProducts);
 
 .items {
   display: grid;
-  gap: 4px;
+  gap: 8px;
+
+  .form-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    border: 1px solid #333;
+    padding: 4px 8px;
+
+    span,
+    img {
+      flex: 1;
+    }
+
+    .btn {
+      width: 60px;
+      height: 40px;
+      gap: 4px;
+    }
+  }
 }
 
-.from-item {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  border: 1px solid #333;
-  padding: 4px 8px;
+.el-dialog {
+  width: min(60%, 760px);
+}
 
-  span,
-  img {
-    flex: 1;
+.upload-images {
+  .el-form-item__content {
+    align-items: flex-start;
+    gap: 0px 16px;
+  }
+  .el-upload-list__item-thumbnail,
+  .el-upload-list__item {
+    max-height: 120px;
+    max-width: 120px;
   }
 
-  .btn {
-    width: 60px;
-    height: 40px;
-    gap: 4px;
+  .el-upload--picture-card {
+    max-height: 80px;
+    max-width: 80px;
   }
-}
 
-.thumb-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.thumb-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.thumb-input-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.thumb-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.preview {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #dcdfe6;
-}
-.main-upload :deep(.el-upload-list__item-preview) {
-  opacity: 0 !important;
-  pointer-events: none !important;
+  .el-upload-list__item-preview {
+    opacity: 0 ;
+    pointer-events: none ;
+  }
 }
 </style>
