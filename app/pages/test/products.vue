@@ -20,10 +20,10 @@
 
       <ul v-else class="items">
         <li class="from-item">
-          <div style="width: 60px">大圖</div>
-          <div style="width: 40px">小圖</div>
-
           <span>ID</span>
+          <span style="width: 60px">大圖</span>
+          <span style="width: 40px">小圖</span>
+
           <span>brand</span>
           <span>name</span>
           <span>price</span>
@@ -36,13 +36,13 @@
           <button class="btn">編輯</button>
         </li>
         <li v-for="item in products" :key="item.id" class="from-item">
+          <span>{{ item.id }}</span>
           <img :src="item.images.main" style="width: 60px" />
           <img
             v-if="item.images.thumbnails?.[0]"
             :src="item.images.thumbnails[0]"
             style="width: 40px"
           />
-          <span>{{ item.id }}</span>
           <span>{{ item.brand }}</span>
           <span>{{ item.name }}</span>
           <span>${{ item.price }}</span>
@@ -502,7 +502,8 @@ onMounted(fetchProducts);
   border: 1px solid #333;
   padding: 4px 8px;
 
-  span {
+  span,
+  img {
     flex: 1;
   }
 

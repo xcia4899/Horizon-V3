@@ -58,8 +58,10 @@
 import { ref, computed, watch, nextTick } from "vue";
 //商品資料引入
 import { useProducts } from "@/composables/useProducts";
+import { useTags } from "@/composables/useTags";
+
 import { looding } from "~/composables/useFetchState";
-import type { Product } from "@/composables/useProducts";
+import type { Product } from "@/types/data/products";
 import type { LocationQueryValue } from "vue-router";
 import type { SidebarList } from "~/types/ui/sidebar";
 const route = useRoute();
@@ -67,6 +69,7 @@ const router = useRouter();
 
 const { isDesktop } = useInteractionMode();
 const products = await useProducts();
+const tags = await useTags();
 
 //sidebar 是否關閉
 const isSidebarClose = ref(true);
@@ -78,82 +81,7 @@ const toggleFilter = async () => {
 };
 
 //sidebar項目
-const sidebarList: SidebarList[] = [
-  {
-    title: "品牌",
-    key: "brand",
-
-    options: [
-      { label: "Logitech", value: "logitech" },
-      { label: "Razer", value: "razer" },
-      { label: "ROG", value: "rog" },
-      { label: "MSI", value: "msi" },
-    ],
-  },
-  {
-    title: "鍵盤",
-    key: "keyboard",
-
-    options: [
-      { label: "機械鍵盤", value: "機械鍵盤" },
-      { label: "薄式鍵盤", value: "薄式鍵盤" },
-      { label: "無線鍵盤", value: "無線鍵盤" },
-      { label: "RGB 鍵盤", value: "rgb 鍵盤" },
-    ],
-  },
-  {
-    title: "滑鼠",
-    key: "mouse",
-
-    options: [
-      { label: "有線滑鼠", value: "有線滑鼠" },
-      { label: "無線滑鼠", value: "無線滑鼠" },
-      { label: "電競滑鼠", value: "電競滑鼠" },
-      { label: "RGB 滑鼠", value: "rgb 滑鼠" },
-    ],
-  },
-  {
-    title: "耳機",
-    key: "earphone",
-
-    options: [
-      { label: "藍芽耳機", value: "藍芽耳機" },
-      { label: "有線耳機", value: "有線耳機" },
-      { label: "降噪耳機", value: "降噪耳機" },
-      { label: "電競耳機", value: "電競耳機" },
-    ],
-  },
-  {
-    title: "麥克風",
-    key: "mic",
-
-    options: [
-      { label: "USB 麥克風", value: "usb 麥克風" },
-      { label: "3.5mm 麥克風", value: "3.5mm 麥克風" },
-      { label: "電容式麥克風", value: "電容式麥克風" },
-    ],
-  },
-  {
-    title: "滑鼠墊",
-    key: "mousepad",
-
-    options: [
-      { label: "小型滑鼠墊", value: "小型滑鼠墊" },
-      { label: "大型滑鼠墊", value: "大型滑鼠墊" },
-      { label: "RGB 滑鼠墊", value: "rgb 滑鼠墊" },
-    ],
-  },
-  {
-    title: "價格",
-    key: "price",
-
-    options: [
-      { label: "$2,000以下", value: 2000 },
-      { label: "$4,000以下", value: 4000 },
-      { label: "$4,000以上", value: 4001 },
-    ],
-  },
-];
+const sidebarList: SidebarList[] = tags;
 //過濾route.tag名單
 const tagGroupKeys = new Set([
   "keyboard",

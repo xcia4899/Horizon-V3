@@ -193,7 +193,7 @@ import { computed } from "vue";
 import CommonRecommend from "@/components/common/Recommend.vue";
 import { useProducts } from "@/composables/useProducts";
 /* 商品資料來源  */
-import type { Product } from "@/composables/useProducts";
+import type { Product } from "@/types/data/products";
 import { useCartStore } from "@/stores/useCart";
 import { ArrowLeft } from "@element-plus/icons-vue";
 const { addToCart } = useCartStore();
@@ -296,13 +296,14 @@ const handleBack = () => {
         justify-content: center;
         background: var(--bg-surface-card);
         border-radius: 20px;
-
+        padding: 8px;
         img {
           max-height: 480px;
           max-width: 720px;
           width: 100%;
           height: 100%;
           object-fit: contain;
+          border-radius: 20px;
         }
       }
       .product-media-thumbnails {
