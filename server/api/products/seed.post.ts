@@ -1,8 +1,9 @@
+
 import { serverSupabaseServiceRole } from "#supabase/server";
 import { productSeed } from "~~/server/data/productSeed";
 
 export default defineEventHandler(async (event) => {
-  const client = serverSupabaseServiceRole(event);
+  const client = await serverSupabaseServiceRole(event);
 
   const { data, error } = await client
     .from("products")

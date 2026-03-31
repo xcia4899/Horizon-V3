@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed, watch } from "vue";
-import type { Product } from "@/composables/useProducts";
-
+import type { Product } from "@/types/data/products";
+import { ElMessage } from "element-plus";
 type CartItem = {
   product: Product;
   quantity: number;
@@ -58,18 +58,23 @@ export const useCartStore = defineStore("cart", () => {
   };
 
   const addToCart = (product: Product) => {
+    // 基本檢查
     if (!product?.id) return;
-    const item = carts.value.find((i) => i?.product?.id === product.id);
+    const existingItem = carts.value.find(
+      (item) => item.product.id === product.id,
+    );
 
-    if (item) {
-      item.quantity += 1;
+    if (existingItem) {
+      existingItem.quantity += 1;
+      ElMessage.success("商品數量已增加");
       return;
     }
-
     carts.value.push({
       product,
       quantity: 1,
     });
+
+    ElMessage.success("已加入購物車");
   };
 
   const removeFromCart = (productId: string) => {
@@ -77,6 +82,7 @@ export const useCartStore = defineStore("cart", () => {
     carts.value = carts.value.filter(
       (item) => item.product && item.product.id !== productId,
     );
+    ElMessage.success("已刪除商品");
   };
 
   const updateQuantity = (productId: string, quantity: number) => {

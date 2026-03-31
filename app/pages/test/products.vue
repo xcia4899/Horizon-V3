@@ -5,8 +5,9 @@
         <h1>商品匯入 測試頁</h1>
 
         <div style="display: flex; gap: 8px">
-          <button class="btn" @click="seedProducts">匯入商品資料</button>
-          <button class="btn" @click="resetProducts">重製資料</button>
+          <button class="btn" @click="fetchProducts">刷新資料列表</button>
+          <button class="btn" @click="seedProducts">重製基本資料</button>
+          <button class="btn" @click="resetProducts">全部重製</button>
           <button class="btn" @click="createProduct">新增資料</button>
         </div>
 
@@ -134,7 +135,7 @@
             :on-remove="handleThumbRemove"
             :on-change="handleThumbChange"
           >
-            <el-icon  class="upload-icon">
+            <el-icon class="upload-icon">
               <Plus />
             </el-icon>
           </el-upload>
@@ -290,7 +291,7 @@ const createProduct = () => {
   form.id = `brand-${productLength.value}`;
   dialogVisible.value = true;
 };
-
+//ID依照品牌名稱自動生成
 watch([() => form.brand, () => productLength.value], ([brand, length]) => {
   if (!brand || mode.value !== "create") return;
   const setBrand = brand.trim().toUpperCase().replace(/\s+/g, "-");
@@ -406,18 +407,18 @@ const toProduct = (formData: ProductForm): Product => {
     tags: [...formData.tags],
   };
 };
-// 送出
+// 送出-呼叫API
 const submitForm = async () => {
   try {
     const productData = toProduct({ ...form });
-    const insertData = toProductInsert(productData);
+    const serverData = toProductInsert(productData);
 
     if (mode.value === "create") {
-      await useProducts.createProduct(insertData);
+      await useProducts.createProduct(serverData);
       products.value.push(productData);
       ElMessage.success("新增成功");
     } else {
-      // 之後若要串 API，可改成 await useProducts.updateProduct(productData)
+      await useProducts.updateProduct(form.id, serverData);
       products.value = products.value.map((item) =>
         item.id === form.id ? productData : item,
       );
@@ -455,6 +456,7 @@ const tagOptions = computed(() => {
     }));
 });
 
+/* ------使用API------- */
 // 讀取商品
 const fetchProducts = async () => {
   pending.value = true;
@@ -594,8 +596,8 @@ onMounted(fetchProducts);
   }
 
   .el-upload-list__item-preview {
-    opacity: 0 ;
-    pointer-events: none ;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 </style>
