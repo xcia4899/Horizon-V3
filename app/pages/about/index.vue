@@ -476,7 +476,7 @@ const faqs = [
   .about-cta {
     margin-top: 16px;
     padding: 16px 60px;
-    border-radius: 999px;
+    border-radius: 20px;
     border: 1px solid rgba(#cb8cf5, 0.8);
     background:
       radial-gradient(
