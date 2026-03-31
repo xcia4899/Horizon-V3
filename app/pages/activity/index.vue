@@ -108,9 +108,7 @@
                 </div>
 
                 <div class="card-btns">
-                  <NuxtLink class="btn" :to="item.to || '#'">
-                    查看活動
-                  </NuxtLink>
+                  <NuxtLink class="btn" :to="item.to || '#'"> 查看 </NuxtLink>
                   <button
                     class="btn"
                     type="button"
@@ -139,7 +137,7 @@ type EventItem = {
   tags: string[];
   badge?: string;
   featured?: boolean;
-  to?: string;
+  to?: string | object;
 };
 
 // const isLoading = ref(false);
@@ -153,10 +151,15 @@ const events = ref<EventItem[]>([
     dateRange: "2026/03/01 - 2026/03/14",
     start: "2026-03-01",
     image: "/images/pic-active/10004.jpg",
-    tags: ["限時", "全館"],
+    tags: ["限時", "全館", "特價"],
     badge: "HOT",
     featured: true,
-    to: "/products?keyword=特惠",
+    to: {
+      path: "/products",
+      query: {
+        onsale: "true", // 建議用字串（router 會轉 query string）
+      },
+    },
   },
   {
     id: "event-razer-week",
@@ -166,7 +169,12 @@ const events = ref<EventItem[]>([
     start: "2026-03-10",
     image: "/images/pic-active/10005.jpg",
     tags: ["品牌週", "Razer"],
-    to: "/products?keyword=Razer",
+    to: {
+      path: "/products",
+      query: {
+        tag: "Razer",
+      },
+    },
   },
   {
     id: "event-Logitech-week",
@@ -176,17 +184,25 @@ const events = ref<EventItem[]>([
     start: "2026-03-10",
     image: "/images/pic-active/10001.jpg",
     tags: ["品牌週", "Logitech"],
-    to: "/products?keyword=Logitech",
+    to: {
+      path: "/products",
+      query: {
+        tag: "Logitech",
+      },
+    },
   },
   {
     id: "event-new-arrivals",
-    title: "新品上架｜滑鼠墊與鍵帽專區",
-    description: "整理桌面風格，從細節開始。多款材質與配色上架。",
+    title: "鍵盤新品上架｜機械鍵盤專區",
+    description: "手感與外型全面升級，多款軸體與配色選擇，打造專屬打字體驗。",
     dateRange: "2026/02/20 - 2026/03/31",
     start: "2026-02-20",
     image: "/images/pic-active/10002.jpg",
-    tags: ["新品", "配件"],
-    to: "/products?keyword=新品",
+    tags: ["新品", "鍵盤"],
+    to: {
+      name: "products-id",
+      params: { id: "PRO-1009" },
+    },
   },
   {
     id: "event-new-arrivals",
@@ -195,8 +211,13 @@ const events = ref<EventItem[]>([
     dateRange: "2026/02/20 - 2026/03/31",
     start: "2026-02-20",
     image: "/images/pic-active/10003.jpg",
-    tags: ["新品", "配件"],
-    to: "/products?keyword=新品",
+    tags: ["特價", "配件"],
+    to: {
+      path: "/products",
+      query: {
+        tag: ["小型滑鼠墊", "大型滑鼠墊", "RGB滑鼠墊"],
+      },
+    },
   },
 ]);
 
@@ -259,7 +280,6 @@ const copyTitle = async (text: string) => {
   width: min(1024px, calc(100% - 32px));
   margin: 0 auto;
 }
-
 
 /* activity-hero */
 .activity-hero {

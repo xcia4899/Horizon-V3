@@ -1,7 +1,7 @@
 export const productSeed = [
   {
     id: "RAZER-1000",
-    brand: "RAZER",
+    brand: "Razer",
     name: "DEX-2 RGB鍵盤",
     subtitle: "穩定手感與高速反應兼具的 RGB 電競鍵盤",
     category: "鍵盤",
@@ -519,7 +519,7 @@ export const productSeed = [
   },
   {
     id: "RAZER-1004",
-    brand: "RAZER",
+    brand: "Razer",
     name: "Gigantus-V2 滑鼠墊",
     subtitle: "頂級布面，滑順流暢體驗",
     category: "滑鼠墊",
@@ -1309,7 +1309,7 @@ export const productSeed = [
   },
   {
     id: "RAZER-1011",
-    brand: "RAZER",
+    brand: "Razer",
     name: "Seiren-V3 Mini",
     subtitle: "專為內容創作者打造的迷你麥克風",
     category: "麥克風",
@@ -1825,7 +1825,7 @@ export const productSeed = [
   },
   {
     id: "RAZER-1017",
-    brand: "RAZER",
+    brand: "Razer",
     name: "RAZER-VS 滑鼠",
     subtitle: "極限敏捷，穩定制霸戰場",
     category: "滑鼠",
