@@ -64,7 +64,7 @@ $padding-RWD: clamp(16px, 4vw, 32px);
     --brand-soft: #{$color-purple-300}; // 淡色背景 / badge
     // ========== Action =========
     --action-primary: var(--brand); // 主 CTA
-    --action-primary-hover: var(--brand-soft);
+    --action-primary-hover: #{$color-purple-700};
     --action-primary-soft: var(--brand-soft);
     --shadow-default: 0px 2px 2px 0px rgba(31, 31, 31, 0.4);
     --shadow-card: 0 0px 8px 4px rgba(31, 31, 31, 0.4);
@@ -106,12 +106,25 @@ $padding-RWD: clamp(16px, 4vw, 32px);
         --brand-soft: #{$color-purple-700}; // 淡色 / 背景用途
         //  ========== Action ========= 
         --action-primary: var(--brand);
-        --action-primary-hover: var(--brand);
+        --action-primary-hover: var(--brand-hover);
         --action-primary-soft: var(--brand-soft);
         --shadow-default: 0px 2px 2px 0px rgba(117, 117, 117, 0.4);
         --shadow-card: 0 0px 8px 4px rgba(117, 117, 117, 0.4);
         --shadow-bottomBar: 0 -2px 2px 0px rgba(117, 117, 117, 0.4);
         // /========== State ========= 
-        --state-danger: #{$color-red-500}; //
+        --state-danger: #{$color-red-500};
+        //  ========== Elment-Plus =========
+        --el-color-primary: #a02fec;
     }
+}
+
+/*  ========== Elment-Plus 改色========= */
+:root {
+    --el-color-primary: #a02fec !important;
+    --el-color-primary-light-3: #c084fc !important;
+    --el-color-primary-light-5: #d8b4fe !important;
+    --el-color-primary-light-7: #e9d5ff !important;
+    --el-color-primary-light-8: #f3e8ff !important;
+    --el-color-primary-light-9: #faf5ff !important;
+    --el-color-primary-dark-2: #7e22ce !important;
 }

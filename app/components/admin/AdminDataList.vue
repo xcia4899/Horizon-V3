@@ -1,7 +1,7 @@
 <template>
-  <div class="data-list">
+  <div class="data-content">
     <div
-      class="data-row data-row--head"
+      class="data-row data-row-head"
       :style="{ gridTemplateColumns: gridColumns }"
     >
       <div v-for="column in tableTitle" :key="column.key">
@@ -34,7 +34,11 @@ defineProps<{
 </script>
 
 <style scoped lang="scss">
-.data-list {
+.data-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
   border: 1px solid var(--border-default);
   border-radius: 12px;
   overflow: hidden;
@@ -49,12 +53,19 @@ defineProps<{
   padding: 14px 16px;
   border-bottom: 1px solid var(--border-default);
 
-  &--head {
+  &-head {
+   position: sticky;
+    top: 0;
+    z-index: 2;
     font-weight: 600;
     background: var(--bg-surface-strong);
   }
 }
-
+.data-body {
+  min-height: 0;
+  // max-height: clamp(240px, 50dvh, 640px);
+  overflow-y: auto;
+}
 .data-empty {
   padding: 32px;
   text-align: center;

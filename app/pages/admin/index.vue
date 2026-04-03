@@ -17,7 +17,7 @@
       <div class="dashboard-card">
         <h3>商品管理</h3>
         <p>新增、編輯與刪除商品資料。</p>
-        <NuxtLink to="/admin/products" class="card-btn">前往管理</NuxtLink>
+        <NuxtLink to="/admin/adminProducts" class="card-btn">前往管理</NuxtLink>
       </div>
 
       <div class="dashboard-card">

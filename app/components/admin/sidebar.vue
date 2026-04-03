@@ -11,7 +11,7 @@
       </NuxtLink>
 
       <NuxtLink
-        to="/admin/products"
+        to="/admin/adminProducts"
         class="sidebar-item"
         active-class="is-active"
       >
@@ -53,7 +53,7 @@ const goToAdmin = () => {
 
 <style scoped lang="scss">
 .admin-sidebar {
-  //   width: 240px;
+
   min-height: 100vh;
   padding: 20px 16px;
   background: var(--bg-surface);
