@@ -230,7 +230,7 @@ onMounted(fetchProducts);
     }
 
     &:hover {
-      background: var(--bg-surface-strong);
+      background: var(--bg-surface-soft);
     }
   }
 }
