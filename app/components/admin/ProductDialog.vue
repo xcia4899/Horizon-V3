@@ -124,9 +124,7 @@
 
     <template #footer>
       <div class="dialog-footer">
-        <el-button class="btn-cancel" @click="handleClose">
-          取消
-        </el-button>
+        <el-button class="btn-cancel" @click="handleClose"> 取消 </el-button>
         <el-button class="btn-submit" type="primary" @click="submitForm">
           {{ mode === "create" ? "新增" : "儲存" }}
         </el-button>
@@ -139,8 +137,8 @@
 import { reactive, ref, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import type { UploadProps, UploadUserFile } from "element-plus";
+
 import type { Product, ProductForm } from "~/types/data/products";
-//資料匯入
 import { detailPresets } from "@/constants/detailPresets";
 import { highlightsPreset } from "@/constants/highlightsPreset";
 
@@ -149,17 +147,17 @@ const props = defineProps<{
   mode: "create" | "edit";
   product: Product | null;
   productLength: number;
-  tagOptions: { label: string; value: string }[];
+  tagOptions: { label: string; value: string | number }[];
 }>();
+
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
   (e: "submit", value: Product): void;
 }>();
-// upload file list
+
 const mainFileList = ref<UploadUserFile[]>([]);
 const thumbFileList = ref<UploadUserFile[]>([]);
 
-//表單
 const form = reactive<ProductForm>({
   id: "",
   name: "",
@@ -179,7 +177,7 @@ const form = reactive<ProductForm>({
   highlights: structuredClone(highlightsPreset),
   tags: [],
 });
-// 重設表單
+
 const resetForm = () => {
   form.id = "";
   form.name = "";
@@ -191,24 +189,16 @@ const resetForm = () => {
   form.onsale = false;
   form.color = "";
   form.description = "";
-
   form.images.main = "";
   form.images.thumbnails = [];
-
   form.details = [];
-
-  form.highlights = {
-    title: "",
-    description: "",
-    items: [],
-  };
-
+  form.highlights = structuredClone(highlightsPreset);
   form.tags = [];
 
   mainFileList.value = [];
   thumbFileList.value = [];
 };
-//填入表單
+
 const fillForm = (product: Product) => {
   form.id = product.id;
   form.name = product.name;
@@ -220,18 +210,32 @@ const fillForm = (product: Product) => {
   form.onsale = product.onsale ?? false;
   form.color = product.color ?? "";
   form.description = product.description ?? "";
+
   form.images = {
     main: product.images?.main ?? "",
     thumbnails: [...(product.images?.thumbnails ?? [])],
   };
-  form.details = structuredClone(product.details ?? []);
-  form.highlights = structuredClone(
-    product.highlights ?? {
-      title: "",
-      description: "",
-      items: [],
-    },
-  );
+
+  form.details = (product.details ?? []).map((detail) => ({
+    section: detail.section ?? "",
+    content: (detail.content ?? []).map((content) => ({
+      title: content.title ?? "",
+      text: [...(content.text ?? [])],
+    })),
+  }));
+
+  form.highlights = {
+    title: product.highlights?.title ?? "",
+    description: product.highlights?.description ?? "",
+    items: (product.highlights?.items ?? []).map((item) => ({
+      id: item.id ?? "",
+      title: item.title ?? "",
+      subtitle: item.subtitle ?? "",
+      icon: item.icon ?? "",
+      desc: [...(item.desc ?? [])],
+    })),
+  };
+
   form.tags = [...(product.tags ?? [])];
 
   mainFileList.value = form.images.main
@@ -243,12 +247,12 @@ const fillForm = (product: Product) => {
     url,
   }));
 };
-//建立時預設ID 流水號
+
 const createDefaultId = () => {
   const number = `10${String(props.productLength + 1).padStart(2, "0")}`;
   form.id = `brand-${number}`;
 };
-//彈出視窗打開時判斷模式
+
 watch(
   () => props.modelValue,
   (visible) => {
@@ -267,7 +271,7 @@ watch(
   },
   { immediate: true },
 );
-//ID依照品牌名稱自動生成
+
 watch(
   [() => form.brand, () => props.productLength, () => props.mode],
   ([brand, productLength, mode]) => {
@@ -278,7 +282,7 @@ watch(
     form.id = `${setBrand}-${number}`;
   },
 );
-// category 改變時，自動帶入 details preset
+
 watch(
   () => form.category,
   (val) => {
@@ -290,22 +294,23 @@ watch(
     form.details = structuredClone(detailPresets[val] ?? []);
   },
 );
-// 主圖：移除
+
 const handleMainRemove: UploadProps["onRemove"] = () => {
   form.images.main = "";
   mainFileList.value = [];
 };
-// 主圖：變更
+
 const handleMainChange: UploadProps["onChange"] = (uploadFile) => {
   if (uploadFile.raw && !uploadFile.url) {
     uploadFile.url = URL.createObjectURL(uploadFile.raw);
   }
+
   form.images.main = uploadFile.url ?? "";
   mainFileList.value = uploadFile.url
     ? [{ name: uploadFile.name, url: uploadFile.url }]
     : [];
 };
-// 縮圖：移除
+
 const handleThumbRemove: UploadProps["onRemove"] = (
   _uploadFile,
   uploadFiles,
@@ -314,7 +319,7 @@ const handleThumbRemove: UploadProps["onRemove"] = (
     .map((file) => file.url)
     .filter((url): url is string => !!url);
 };
-// 縮圖：變更
+
 const handleThumbChange: UploadProps["onChange"] = (
   uploadFile,
   uploadFiles,
@@ -327,15 +332,14 @@ const handleThumbChange: UploadProps["onChange"] = (
     .map((file) => file.url)
     .filter((url): url is string => !!url);
 };
-// ProductForm -> Product 轉換用
+
 const toProduct = (formData: ProductForm): Product => {
   return {
-    ...form,
+    ...formData,
     images: {
       main: formData.images.main,
       thumbnails: [...formData.images.thumbnails],
     },
-
     details: formData.details.map((detail) => ({
       section: detail.section,
       content: detail.content.map((content) => ({
@@ -343,7 +347,6 @@ const toProduct = (formData: ProductForm): Product => {
         text: [...content.text],
       })),
     })),
-
     highlights: {
       title: formData.highlights.title,
       description: formData.highlights.description,
@@ -355,7 +358,6 @@ const toProduct = (formData: ProductForm): Product => {
         desc: [...(item.desc ?? [])],
       })),
     },
-
     tags: [...formData.tags],
   };
 };
@@ -368,7 +370,33 @@ const submitForm = () => {
 const handleClose = () => {
   emit("update:modelValue", false);
 };
-
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.el-dialog) {
+  width: min(60%, 760px);
+}
+
+.upload-images {
+  :deep(.el-form-item__content) {
+    align-items: flex-start;
+    gap: 0px 16px;
+  }
+
+  :deep(.el-upload-list__item-thumbnail),
+  :deep(.el-upload-list__item) {
+    max-height: 120px;
+    max-width: 120px;
+  }
+
+  :deep(.el-upload--picture-card) {
+    max-height: 80px;
+    max-width: 80px;
+  }
+
+  :deep(.el-upload-list__item-preview) {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+</style>

@@ -12,7 +12,7 @@ export const useTagOptions = () => {
     .filter((item) => item.key !== "price" && item.key !== "brand")
     .flatMap((item) => item.options)
     .map((option) => ({
-      label: (option.label),
-      value: (option.value),
+      label: String(option.label),
+      value: String(option.value),
     }));
 };

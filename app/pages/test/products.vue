@@ -34,8 +34,8 @@
           <span>highlights</span>
           <span>Tags</span>
 
-          <button class="btn">刪除</button>
-          <button class="btn">編輯</button>
+          <button class="btn" disabled>刪除</button>
+          <button class="btn" disabled>編輯</button>
         </li>
         <li v-for="item in products" :key="item.id" class="form-item">
           <span>{{ item.id }}</span>
@@ -60,7 +60,7 @@
       </ul>
     </section>
 
-    <ProductDialog
+    <AdminProductDialog
       v-model="dialogVisible"
       :mode="mode"
       :product="currentProduct"
@@ -76,16 +76,12 @@ import { computed, onMounted, ref } from "vue";
 import { ElMessage } from "element-plus";
 
 import type { Product } from "~/types/data/products";
-
-
 import { useTagOptions } from "@/composables/useTags";
 
 
 //商品pinia
 const productsStore = useProductsStore();
 const { products, pending, errorMsg } = storeToRefs(productsStore);
-
-
 
 // 表單狀態
 const dialogVisible = ref(false);
@@ -201,29 +197,5 @@ onMounted(fetchProducts);
   }
 }
 
-.el-dialog {
-  width: min(60%, 760px);
-}
 
-.upload-images {
-  .el-form-item__content {
-    align-items: flex-start;
-    gap: 0px 16px;
-  }
-  .el-upload-list__item-thumbnail,
-  .el-upload-list__item {
-    max-height: 120px;
-    max-width: 120px;
-  }
-
-  .el-upload--picture-card {
-    max-height: 80px;
-    max-width: 80px;
-  }
-
-  .el-upload-list__item-preview {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
 </style>
