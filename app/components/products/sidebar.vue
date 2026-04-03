@@ -65,10 +65,10 @@
 
 <script setup lang="ts">
 import { computed, toRefs, nextTick } from "vue";
-import type { SidebarList } from "~/types/ui/sidebar";
+import type { SidebarItem } from "~/types/ui/sidebar";
 import { Hide, View } from "@element-plus/icons-vue";
 const props = defineProps<{
-  sidebarList: SidebarList[];
+  sidebarList: SidebarItem[];
   openSections: number[];
   selectTags: (string | number)[];
   onsale: boolean | number | string;

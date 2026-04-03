@@ -63,7 +63,7 @@ import { useTags } from "@/composables/useTags";
 import { looding } from "~/composables/useFetchState";
 import type { Product } from "@/types/data/products";
 import type { LocationQueryValue } from "vue-router";
-import type { SidebarList } from "~/types/ui/sidebar";
+import type { SidebarItem } from "~/types/ui/sidebar";
 const route = useRoute();
 const router = useRouter();
 
@@ -81,7 +81,7 @@ const toggleFilter = async () => {
 };
 
 //sidebar項目
-const sidebarList: SidebarList[] = tags;
+const sidebarList: SidebarItem[] = tags;
 //過濾route.tag名單
 const tagGroupKeys = new Set([
   "keyboard",
