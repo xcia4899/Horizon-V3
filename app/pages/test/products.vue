@@ -212,13 +212,10 @@ import { highlightsPreset } from "@/constants/highlightsPreset";
 import { useTags } from "@/composables/useTags";
 import type { SidebarList } from "~/types/ui/sidebar";
 
-// API
-const useProducts = useProductsApi();
+//商品pinia
+const productsStore = useProductsStore();
+const { products, pending, errorMsg } = storeToRefs(productsStore);
 
-// 商品列表
-const products = ref<Product[]>([]);
-const pending = ref(false);
-const errorMsg = ref("");
 const tagSource = ref<SidebarList[]>(useTags());
 
 // 流水號
@@ -407,31 +404,6 @@ const toProduct = (formData: ProductForm): Product => {
     tags: [...formData.tags],
   };
 };
-// 送出-呼叫API
-const submitForm = async () => {
-  try {
-    const productData = toProduct({ ...form });
-    const serverData = toProductInsert(productData);
-
-    if (mode.value === "create") {
-      await useProducts.createProduct(serverData);
-      products.value.push(productData);
-      ElMessage.success("新增成功");
-    } else {
-      await useProducts.updateProduct(form.id, serverData);
-      products.value = products.value.map((item) =>
-        item.id === form.id ? productData : item,
-      );
-      ElMessage.success("更新成功");
-    }
-
-    dialogVisible.value = false;
-    resetForm();
-  } catch (error: unknown) {
-    console.error("送出失敗：", error);
-    ElMessage.error("送出失敗");
-  }
-};
 
 // category 改變時，自動帶入 details preset
 watch(
@@ -456,89 +428,62 @@ const tagOptions = computed(() => {
     }));
 });
 
+// -呼叫API
+const submitForm = async () => {
+  try {
+    const productData = toProduct({ ...form });
+    if (mode.value === "create") {
+      await productsStore.createProduct(productData);
+      ElMessage.success("新增成功");
+    } else {
+      await productsStore.updateProduct(form.id, productData);
+      ElMessage.success("更新成功");
+    }
+    dialogVisible.value = false;
+    resetForm();
+  } catch (error: unknown) {
+    console.error("送出失敗：", error);
+    ElMessage.error("送出失敗");
+  }
+};
+
 /* ------使用API------- */
+
 // 讀取商品
 const fetchProducts = async () => {
-  pending.value = true;
-  errorMsg.value = "";
-
-  try {
-    const result = await useProducts.getProducts();
-    products.value = result.data ?? [];
-  } catch (error: unknown) {
-    console.error("讀取 products 失敗：", error);
-
-    if (error instanceof Error) {
-      errorMsg.value = error.message;
-    } else {
-      errorMsg.value = "讀取失敗";
-    }
-  } finally {
-    pending.value = false;
-  }
+  await productsStore.fetchProducts();
 };
 
 // 匯入種子資料
 const seedProducts = async () => {
-  pending.value = true;
-  errorMsg.value = "";
-
   try {
-    await useProducts.setSeedProduct();
+    await productsStore.seedProducts();
     ElMessage.success("匯入成功");
-    await fetchProducts();
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("匯入失敗：", error);
-
-    if (error instanceof Error) {
-      errorMsg.value = error.message;
-    } else {
-      errorMsg.value = "匯入失敗";
-    }
-  } finally {
-    pending.value = false;
+    ElMessage.error("匯入失敗");
   }
 };
 
 // 重製資料
 const resetProducts = async () => {
-  pending.value = true;
-  errorMsg.value = "";
-
   try {
-    await useProducts.resetProducts();
-    ElMessage.success("重製成功");
-    await fetchProducts();
-  } catch (error: unknown) {
+    await productsStore.resetProducts();
+    ElMessage.success("重置成功");
+  } catch (error) {
     console.error("重置失敗：", error);
-
-    if (error instanceof Error) {
-      errorMsg.value = error.message;
-    } else {
-      errorMsg.value = "重置失敗";
-    }
-  } finally {
-    pending.value = false;
+    ElMessage.error("重置失敗");
   }
 };
 
 // 刪除商品
 const deleteProduct = async (id: string) => {
-  pending.value = true;
-  errorMsg.value = "";
-
   try {
-    await useProducts.deleteProduct(id);
-    products.value = products.value.filter((p) => p.id !== id);
+    await productsStore.deleteProduct(id);
     ElMessage.success("刪除成功");
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      errorMsg.value = error.message;
-    } else {
-      errorMsg.value = "刪除失敗";
-    }
-  } finally {
-    pending.value = false;
+  } catch (error) {
+    console.error("刪除失敗：", error);
+    ElMessage.error("刪除失敗",);
   }
 };
 
