@@ -21,34 +21,36 @@
         :grid-columns="gridColumns"
         empty-text="目前沒有商品資料"
       >
-        <div
-          v-for="item in products"
-          :key="item.id"
-          class="page-content-data-item"
-          :style="{ gridTemplateColumns: gridColumns }"
-        >
-          <div>{{ item.id }}</div>
-          <div>{{ item.brand }}</div>
-          <div>{{ item.name }}</div>
-          <div>${{ item.price.toLocaleString() }}</div>
-          <div>{{ item.onsale ? "O" : "X" }}</div>
-          <div>{{ item.category }}</div>
-          <div class="actions">
-            <button class="admin-btn" @click="openEditDialog(item)">
-              詳細
-            </button>
-            <button class="admin-btn edit-btn" @click="openEditDialog(item)">
-              編輯
-            </button>
+        <template #default="{ items }">
+          <div
+            v-for="item in items"
+            :key="item.id"
+            class="page-content-data-item"
+            :style="{ gridTemplateColumns: gridColumns }"
+          >
+            <div>{{ item.id }}</div>
+            <div>{{ item.brand }}</div>
+            <div>{{ item.name }}</div>
+            <div>${{ item.price.toLocaleString() }}</div>
+            <div>{{ item.onsale ? "O" : "X" }}</div>
+            <div>{{ item.category }}</div>
+            <div class="actions">
+              <button class="admin-btn" @click="openEditDialog(item)">
+                詳細
+              </button>
+              <button class="admin-btn edit-btn" @click="openEditDialog(item)">
+                編輯
+              </button>
 
-            <button
-              class="admin-btn delete-btn"
-              @click="deleteProduct(item.id)"
-            >
-              刪除
-            </button>
+              <button
+                class="admin-btn delete-btn"
+                @click="deleteProduct(item.id)"
+              >
+                刪除
+              </button>
+            </div>
           </div>
-        </div>
+        </template>
       </AdminDataList>
     </main>
     <!-- 商品新增編輯 -->
@@ -202,7 +204,6 @@ onMounted(fetchProducts);
   display: grid;
   gap: 8px;
   min-height: 0;
-
 
   .page-content-data-item {
     display: grid;

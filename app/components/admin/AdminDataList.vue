@@ -9,28 +9,50 @@
       </div>
     </div>
 
-    <div v-if="items.length === 0" class="data-empty">
+    <div v-if="paginatedItems.length === 0" class="data-empty">
       {{ emptyText || "目前沒有資料" }}
     </div>
 
     <div v-else class="data-body">
-      <slot></slot>
+      <slot :items="paginatedItems"></slot>
     </div>
+  </div>
+  <div class="pagination-container">
+    <el-pagination
+      v-if="items.length > pageSize"
+      v-model:current-page="currentPage"
+      :page-size="pageSize"
+      :total="items.length"
+      size="large"
+      layout="prev, pager, next"
+      class="pagination"
+    />
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="T">
 export interface AdminColumn {
   key: string;
   label: string;
 }
 
-defineProps<{
+const props = defineProps<{
   tableTitle: AdminColumn[];
-  items: unknown[];
+  items: T[];
   gridColumns: string;
   emptyText?: string;
 }>();
+defineSlots<{
+  default(props: { items: T[] }): unknown;
+}>();
+
+const currentPage = ref(1);
+const pageSize = 12;
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return props.items.slice(start, end);
+});
 </script>
 
 <style scoped lang="scss">
@@ -43,7 +65,6 @@ defineProps<{
   border-radius: 12px;
   overflow: hidden;
   background: var(--bg-surface);
-  box-shadow: var(--shadow-default);
 }
 
 .data-row {
@@ -54,7 +75,7 @@ defineProps<{
   border-bottom: 1px solid var(--border-default);
 
   &-head {
-   position: sticky;
+    position: sticky;
     top: 0;
     z-index: 2;
     font-weight: 600;
@@ -63,12 +84,30 @@ defineProps<{
 }
 .data-body {
   min-height: 0;
-  // max-height: clamp(240px, 50dvh, 640px);
+  // max-height: clamp(400px, 76dvh, 900px);
   overflow-y: auto;
 }
 .data-empty {
   padding: 32px;
   text-align: center;
   color: var(--text-secondary);
+}
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  .el-pagination {
+    gap: 12px;
+    :deep(.el-pager) {
+      gap: 8px;
+      li {
+        background: var(--bg-surface);
+      }
+    }
+    :deep(button) {
+      background-color: var(--bg-surface);
+    }
+  }
 }
 </style>

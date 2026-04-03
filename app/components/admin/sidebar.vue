@@ -53,12 +53,12 @@ const goToAdmin = () => {
 
 <style scoped lang="scss">
 .admin-sidebar {
-
-  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  // min-height: 100vh;
+  // height: 100%;
   padding: 20px 16px;
-  background: var(--bg-surface);
-  border-right: 2px dotted var(--border-default);
-  color: var(--text-primary);
+  
 }
 
 .sidebar-head {

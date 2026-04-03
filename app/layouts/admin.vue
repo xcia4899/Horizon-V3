@@ -4,7 +4,7 @@
       <AdminHeader />
     </header>
     <section class="admin-content">
-      <aside class="admin-sidebar">
+      <aside class="admin-content-sidebar">
         <AdminSidebar />
       </aside>
       <main class="admin-main">
@@ -28,7 +28,6 @@ useSeoMeta({
   flex-direction: column;
   position: relative;
   isolation: isolate;
-
 }
 .admin-header {
   //   position: fixed;
@@ -42,14 +41,17 @@ useSeoMeta({
   flex: 1;
   position: relative;
   display: flex;
-  .admin-sidebar {
+  .admin-content-sidebar {
     flex: 0 0 20%;
+    position: relative;
+
     max-width: 200px;
     min-width: 160px;
-    background:var(text-tertiary);
+    background: var(--bg-surface);
+    border-right: 2px dotted var(--border-default);
+    color: var(--text-primary);
   }
   .admin-main {
-
     flex: 1;
     position: relative;
     padding: 16px;
