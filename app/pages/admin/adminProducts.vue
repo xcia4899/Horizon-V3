@@ -35,7 +35,7 @@
             <div>{{ item.onsale ? "O" : "X" }}</div>
             <div>{{ item.category }}</div>
             <div class="actions">
-              <button class="admin-btn" @click="openEditDialog(item)">
+              <button class="admin-btn" @click="openDetailDialog(item)">
                 詳細
               </button>
               <button class="admin-btn edit-btn" @click="openEditDialog(item)">
@@ -61,6 +61,10 @@
       :product-length="products.length"
       :tag-options="tagOptions"
       @submit="handleSubmit"
+    />
+    <AdminProductDetailDialog
+      v-model="detailDialogVisible"
+      :product="currentProduct"
     />
   </div>
 </template>
@@ -91,13 +95,21 @@ const tableTitle: AdminColumn[] = [
   { key: "category", label: "分類" },
   { key: "actions", label: "操作" },
 ];
-const gridColumns = computed(() => "1fr 1fr 2fr 1fr 1fr 1fr 2fr");
+const gridColumns = computed(() => " 1fr 1fr 2fr 1fr 1fr 1fr 2fr");
 
 // 表單狀態
+const detailDialogVisible = ref(false);
 const dialogVisible = ref(false);
-const mode = ref<"create" | "edit">("create");
+const mode = ref<"create" | "edit" >("create");
 const currentProduct = ref<Product | null>(null);
 
+// 開啟詳細
+const openDetailDialog = (product: Product) => {
+  
+  currentProduct.value = product;
+  detailDialogVisible.value = true;
+  console.log("openDetailDialog", product,mode.value);
+};
 // 開啟新增
 const openCreateDialog = () => {
   mode.value = "create";
@@ -120,7 +132,8 @@ const handleSubmit = async (productData: Product) => {
     if (mode.value === "create") {
       await productsStore.createProduct(productData);
       ElMessage.success("新增成功");
-    } else {
+    }
+    if (mode.value === "edit") {
       await productsStore.updateProduct(productData.id, productData);
       ElMessage.success("更新成功");
     }

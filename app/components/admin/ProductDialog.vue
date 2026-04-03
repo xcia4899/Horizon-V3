@@ -144,7 +144,7 @@ import { highlightsPreset } from "@/constants/highlightsPreset";
 
 const props = defineProps<{
   modelValue: boolean;
-  mode: "create" | "edit";
+  mode: "create" | "edit" ;
   product: Product | null;
   productLength: number;
   tagOptions: { label: string; value: string | number }[];
