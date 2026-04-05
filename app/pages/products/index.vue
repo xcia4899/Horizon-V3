@@ -57,7 +57,9 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from "vue";
 //商品資料引入
-import { useProducts } from "@/composables/useProducts";
+import { storeToRefs } from "pinia";
+// import { useProducts } from "@/composables/useProducts";
+import { useProductsStore } from "@/stores/useProductsStore";
 import { useTags } from "@/composables/useTags";
 
 import { looding } from "~/composables/useFetchState";
@@ -67,8 +69,16 @@ import type { SidebarItem } from "~/types/ui/sidebar";
 const route = useRoute();
 const router = useRouter();
 
+//獲取商品資料
+const productsStore = useProductsStore();
+const { products  } = storeToRefs(productsStore);
+await productsStore.fetchProducts();
+
+
+
+
 const { isDesktop } = useInteractionMode();
-const products = await useProducts();
+// const products = await useProducts();
 const tags = await useTags();
 
 //sidebar 是否關閉
@@ -148,7 +158,7 @@ const productListView = computed<Product[]>(() => {
 
   const kw = keyword.value.trim().toLowerCase();
 
-  const list = products.filter((product) => {
+  const list = products.value.filter((product) => {
     const brandKey = norm(product.brand);
     const productTags = (product.tags ?? []).map(norm);
 

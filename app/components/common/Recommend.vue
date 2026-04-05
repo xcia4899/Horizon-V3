@@ -52,7 +52,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 import { useProducts } from "@/composables/useProducts";
-import type { Product } from "@/composables/useProducts";
+import type { Product } from "~/types/data/products";
 
 //獲取商品資料
 const products = await useProducts();

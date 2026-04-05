@@ -135,6 +135,7 @@ const closeMenuOpenMobile = async () => {
 const goHome = async () => {
   await looding(200);
   closeMenu();
+  isMenuOpenMobile.value = false;
   navigateTo("/");
 };
 </script>

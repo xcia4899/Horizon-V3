@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from "@/composables/useProducts";
+import type { Product } from "~/types/data/products";
 // import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/useCart";
 // const { resolveImg } = useImageResolver();
