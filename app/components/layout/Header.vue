@@ -42,7 +42,7 @@
 import type { SetMenu } from "~/types/ui/menu";
 import { looding } from "~/composables/useFetchState";
 // const router = useRouter();
-
+const { closeMenu } = useMenu();
 // 所有導覽列選單資料
 const menus: SetMenu[] = [
   {
@@ -134,10 +134,9 @@ const closeMenuOpenMobile = async () => {
 };
 const goHome = async () => {
   await looding(200);
+  closeMenu();
   navigateTo("/");
 };
-
-
 </script>
 
 <style scoped lang="scss">
