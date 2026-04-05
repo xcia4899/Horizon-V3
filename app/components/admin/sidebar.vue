@@ -11,7 +11,7 @@
       </NuxtLink>
 
       <NuxtLink
-        to="/admin/adminProducts"
+        to="/admin/products"
         class="sidebar-item"
         active-class="is-active"
       >
@@ -24,14 +24,6 @@
         active-class="is-active"
       >
         Banner
-      </NuxtLink>
-
-      <NuxtLink
-        to="/admin/hot-products"
-        class="sidebar-item"
-        active-class="is-active"
-      >
-        熱門商品
       </NuxtLink>
 
       <NuxtLink
@@ -58,7 +50,6 @@ const goToAdmin = () => {
   // min-height: 100vh;
   // height: 100%;
   padding: 20px 16px;
-  
 }
 
 .sidebar-head {
@@ -86,34 +77,42 @@ const goToAdmin = () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-.sidebar-item {
-  display: block;
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: transparent;
-  color: var(--text-primary);
-  text-decoration: none;
-  user-select: none;
-  font-weight: 600;
-
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-  &:hover {
-    background: rgba($color-gray-600, 0.18);
+  .sidebar-item {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: transparent;
     color: var(--text-primary);
-    transform: translateX(2px);
-  }
+    text-decoration: none;
+    user-select: none;
+    font-weight: 600;
 
-  &.is-active {
-    background: var(--bg-surface-contrast);
-    color: var(--text-inverse);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+    &:hover {
+      background: rgba($color-gray-600, 0.18);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+
+    &.is-active {
+      background: var(--bg-surface-contrast);
+      color: var(--text-inverse);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    }
+  }
+  @media (max-width: 600px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+     gap: 8px;
+    .sidebar-item{
+      width: calc(32% - 5px);
+      padding: 12px 16px;
+    }
   }
 }
 </style>

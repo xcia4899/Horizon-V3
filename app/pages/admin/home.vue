@@ -27,11 +27,11 @@
         class="data-row"
         :style="{ gridTemplateColumns: gridColumns }"
       >
-        <div>{{ item.id }}</div>
-        <div>{{ item.name }}</div>
-        <div>${{ item.price }}</div>
+        <div class="data-cell" data-label="ID">{{ item.id }}</div>
+        <div class="data-cell" data-label="Name">{{ item.name }}</div>
+        <div class="data-cell" data-label="Price">${{ item.price }}</div>
 
-        <div class="actions">
+        <div class="data-cell actions" data-label="Actions">
           <button class="admin-btn" @click="editItem(item.id)">編輯</button>
           <button class="admin-btn delete-btn" @click="deleteItem(item.id)">
             刪除
@@ -101,9 +101,9 @@ const fetchHomeSections = () => {
   homeSectionData.value = dataSeed;
 };
 
-const updateSection = (section: HomeSection, items: Product[]) => {
-  homeSectionData.value[section] = items;
-};
+// const updateSection = (section: HomeSection, items: Product[]) => {
+//   homeSectionData.value[section] = items;
+// };
 
 const currentItems = computed(() => {
   return homeSectionData.value[activeSection.value];

@@ -12,7 +12,7 @@
     <button class="admin-btn add-btn" @click="openCreateDialog">
       新增商品
     </button>
-    <p v-if="errorMsg">{{ errorMsg }}</p>
+
     <p v-if="pending">資料更新中...</p>
     <main v-else class="page-content">
       <AdminDataList
@@ -28,13 +28,17 @@
             class="page-content-data-item"
             :style="{ gridTemplateColumns: gridColumns }"
           >
-            <div>{{ item.id }}</div>
-            <div>{{ item.brand }}</div>
-            <div>{{ item.name }}</div>
-            <div>${{ item.price.toLocaleString() }}</div>
-            <div>{{ item.onsale ? "O" : "X" }}</div>
-            <div>{{ item.category }}</div>
-            <div class="actions">
+            <div class="data-cell" data-label="ID">{{ item.id }}</div>
+            <div class="data-cell" data-label="Brand">{{ item.brand }}</div>
+            <div class="data-cell" data-label="Name">{{ item.name }}</div>
+            <div class="data-cell" data-label="Price">
+              ${{ item.price.toLocaleString() }}
+            </div>
+            <div class="data-cell" data-label="On Sale">
+              {{ item.onsale ? "O" : "X" }}
+            </div>
+            <div class="data-cell" data-label="Category">{{ item.category }}</div>
+            <div class="data-cell actions" data-label="Actions">
               <button class="admin-btn" @click="openDetailDialog(item)">
                 詳細
               </button>
@@ -80,7 +84,7 @@ definePageMeta({
 
 //商品pinia
 const productsStore = useProductsStore();
-const { products, pending, errorMsg } = storeToRefs(productsStore);
+const { products, pending } = storeToRefs(productsStore);
 
 interface AdminColumn {
   key: string;

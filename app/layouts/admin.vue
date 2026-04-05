@@ -58,4 +58,22 @@ useSeoMeta({
     background: var(--bg-surface-soft);
   }
 }
+
+@media (max-width: 600px) {
+  .admin-content {
+    flex-direction: column;
+  }
+
+  .admin-content .admin-content-sidebar {
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 2px dotted var(--border-default);
+  }
+
+  .admin-content .admin-main {
+    padding: 12px 12px 32px;
+  }
+}
 </style>

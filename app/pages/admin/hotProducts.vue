@@ -21,11 +21,11 @@
         class="data-row"
         :style="{ gridTemplateColumns: gridColumns }"
       >
-        <div>item.id</div>
-        <div>item.name</div>
-        <div>$ item.price</div>
+        <div class="data-cell" data-label="ID">item.id</div>
+        <div class="data-cell" data-label="Name">item.name</div>
+        <div class="data-cell" data-label="Price">$ item.price</div>
 
-        <div class="actions">
+        <div class="data-cell actions" data-label="Actions">
           <button class="admin-btn">編輯</button>
 
           <button class="admin-btn delete-btn">刪除</button>
