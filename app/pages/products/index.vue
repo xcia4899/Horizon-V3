@@ -72,7 +72,10 @@ const router = useRouter();
 //獲取商品資料
 const productsStore = useProductsStore();
 const { products  } = storeToRefs(productsStore);
-await productsStore.fetchProducts();
+if (!productsStore.isLoaded) {
+  console.log("fetchProducts!!!!!!!!!");
+  await productsStore.fetchProducts();
+}
 
 
 
