@@ -29,7 +29,10 @@ export const useProductsStore = defineStore("products", () => {
     await fetchProducts(true);
   };
 
-  const fetchProductById = async (id: string) => {
+  const getProductById = async (id: string) => {
+    const cached = products.value.find((item) => item.id === id);
+    if (cached) return cached;
+
     pending.value = true;
     errorMsg.value = "";
 
@@ -40,7 +43,7 @@ export const useProductsStore = defineStore("products", () => {
       if (error instanceof Error) {
         errorMsg.value = error.message;
       } else {
-        errorMsg.value = "讀取單筆失敗";
+        errorMsg.value = "讀取失敗";
       }
       return null;
     } finally {
@@ -156,7 +159,7 @@ export const useProductsStore = defineStore("products", () => {
     isLoaded,
     fetchProducts,
     refreshProducts,
-    fetchProductById,
+    getProductById,
     createProduct,
     updateProduct,
     deleteProduct,

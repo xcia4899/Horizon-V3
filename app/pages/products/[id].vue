@@ -191,9 +191,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import CommonRecommend from "@/components/common/Recommend.vue";
-import { useProducts } from "@/composables/useProducts";
+import { useProductsStore } from "@/stores/useProductsStore";
 /* 商品資料來源  */
 import type { Product } from "@/types/data/products";
+
 import { useCartStore } from "@/stores/useCart";
 import { ArrowLeft } from "@element-plus/icons-vue";
 const { addToCart } = useCartStore();
@@ -202,15 +203,23 @@ const router = useRouter();
 
 /* 從路由接收ID */
 const id = computed(() => String(route.params.id ?? ""));
-/* 從useProducts接收商品資料 */
-const productSeed: Product[] = await useProducts();
+const productsStore = useProductsStore();
+const product = ref<Product | null>(null);
 
-/* 過濾商品內容 */
-const product = computed<Product | undefined>(() =>
-  productSeed.find((item) => item.id === id.value),
-);
+const loadProduct = async (productId: string) => {
+  if (!productId) {
+    product.value = null;
+    return;
+  }
+  product.value = await productsStore.getProductById(productId);
+};
 
-/* 主要大圖 */
+await loadProduct(id.value);
+watch(id, (nextId) => {
+  
+  loadProduct(nextId);
+});
+
 const currentImage = ref("");
 watch(
   product,
