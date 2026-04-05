@@ -12,9 +12,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     public: {
-      // 公開變數：對應 NUXT_PUBLIC_BACKEND_BASE_URL，用於前端 API 呼叫
-      apiBase: "",
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseAnonKey: process.env.SUPABASE_KEY,
     },
   },
 
