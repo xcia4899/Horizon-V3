@@ -185,7 +185,10 @@
       </div>
     </section>
   </div>
-  <div v-else class="noProduct">商品不存在</div>
+  <div v-else class="noProduct">
+    <h2>商品不存在</h2>
+    <button class="btn" @click="handleBack">返回</button>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -216,7 +219,6 @@ const loadProduct = async (productId: string) => {
 
 await loadProduct(id.value);
 watch(id, (nextId) => {
-  
   loadProduct(nextId);
 });
 
@@ -274,7 +276,6 @@ const handleBack = () => {
     padding-block: 16px 8px;
     :deep(.el-page-header__content) {
       color: var(--text-secondary);
-     
     }
   }
   .product-overview {
@@ -623,6 +624,7 @@ const handleBack = () => {
 .noProduct {
   background-color: $color-black;
   height: 400px;
+  padding: 72px;
   display: grid;
   place-items: center;
   font-size: 28px;
