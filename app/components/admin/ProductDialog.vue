@@ -6,16 +6,16 @@
     @close="handleClose"
     @closed="resetForm"
   >
-    <el-form :model="form" label-width="80px" class="product-form">
+    <el-form ref="formRef" :model="form" :rules="formRules" label-width="80px" class="product-form">
       <el-form-item label="ID" class="form-item form-item-id">
         <el-input v-model="form.id" disabled class="form-input" />
       </el-form-item>
 
-      <el-form-item label="品牌" class="form-item form-item-brand">
+      <el-form-item label="品牌" class="form-item form-item-brand" prop="brand">
         <el-input v-model="form.brand" class="form-input" />
       </el-form-item>
 
-      <el-form-item label="名稱" class="form-item form-item-name">
+      <el-form-item label="名稱" class="form-item form-item-name" prop="name">
         <el-input v-model="form.name" class="form-input" />
       </el-form-item>
 
@@ -136,7 +136,7 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import type { UploadProps, UploadUserFile } from "element-plus";
+import type { FormInstance, FormRules, UploadProps, UploadUserFile } from "element-plus";
 
 import type { Product, ProductForm } from "~/types/data/products";
 import { detailPresets } from "@/constants/detailPresets";
@@ -157,6 +157,20 @@ const emit = defineEmits<{
 
 const mainFileList = ref<UploadUserFile[]>([]);
 const thumbFileList = ref<UploadUserFile[]>([]);
+const formRef = ref<FormInstance>();
+
+const formRules: FormRules<ProductForm> = {
+  brand: [
+    { required: true, message: "品牌不能為空", trigger: "blur" },
+    {  message: "Brand name is required.", trigger: "change" },
+    { min: 2, max: 20, message: "品牌名稱需 2~20 字", trigger: "blur" },
+  ],
+  name: [
+    { required: true, message: "商品名稱不能為空", trigger: "blur" },
+    { required: true, message: "Brand name is required.", trigger: "change" },
+     { min: 2, max: 20, message: "商品名稱需 2~20 字", trigger: "blur" }
+  ],
+};
 
 const form = reactive<ProductForm>({
   id: "",
@@ -197,6 +211,7 @@ const resetForm = () => {
 
   mainFileList.value = [];
   thumbFileList.value = [];
+  formRef.value?.clearValidate();
 };
 
 const fillForm = (product: Product) => {
@@ -362,12 +377,21 @@ const toProduct = (formData: ProductForm): Product => {
   };
 };
 
-const submitForm = () => {
+const submitForm = async () => {
+  if (!formRef.value) return;
+  try {
+    await formRef.value.validate();
+  } catch {
+    return;
+  }
+
   const productData = toProduct({ ...form });
   emit("submit", productData);
+  formRef.value?.clearValidate();
 };
 
 const handleClose = () => {
+  formRef.value?.clearValidate();
   emit("update:modelValue", false);
 };
 </script>
