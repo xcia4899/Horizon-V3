@@ -9,28 +9,18 @@ export const useProductsStore = defineStore("products", () => {
   const pending = ref(false);
   const errorMsg = ref("");
   const isLoaded = ref(false);
-  const isLoading = ref(false);
 
   const fetchProducts = async (force = false) => {
-    if (isLoading.value) return;
     if (isLoaded.value && !force) return;
-
-    isLoading.value = true;
     pending.value = true;
     errorMsg.value = "";
-
     try {
       const result = await productsApi.getProducts();
       products.value = result.data ?? [];
       isLoaded.value = true;
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        errorMsg.value = error.message;
-      } else {
-        errorMsg.value = "讀取失敗";
-      }
+      errorMsg.value = error instanceof Error ? error.message : "讀取失敗";
     } finally {
-      isLoading.value = false;
       pending.value = false;
     }
   };
