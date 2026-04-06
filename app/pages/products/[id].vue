@@ -489,6 +489,7 @@ const handleBack = () => {
     flex-direction: column;
     align-items: center;
     background: var(--bg-surface);
+    gap: 16px;
     .product-features-intro,
     .product-features-text,
     .product-features-content {
@@ -504,7 +505,7 @@ const handleBack = () => {
       display: flex;
       justify-content: space-around;
       gap: 30px;
-
+      padding: 64px 32px;
       .content-item {
         display: flex;
         flex-direction: column;
