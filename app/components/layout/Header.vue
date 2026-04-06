@@ -52,30 +52,30 @@ const menus: SetMenu[] = [
     items: [
       {
         text: "全部商品",
-        img: "/images/pic-detal/RAZER-1000/10001.jpg",
+        img: "/images/pic-detal/RAZER-1000/10001.webp",
       },
       {
         text: "特價商品",
-        img: "/images/pic-detal/PRO-1002/10001.png",
+        img: "/images/pic-detal/RAZER-1004/10001.webp",
       },
       {
         text: "滑鼠",
-        img: "/images/picture/fourth-row2-01.png",
+        img: "/images/pic-detal/PRO-1001/10001.webp",
         tag: "mouse",
       },
       {
         text: "鍵盤",
-        img: "/images/picture/fourth-row2-06.png",
+        img: "/images/pic-detal/PRO-1002/10001.webp",
         tag: "keyboard",
       },
       {
         text: "耳機",
-        img: "/images/pic-detal/PRO-1007/10007.png",
+        img: "/images/pic-detal/PRO-1007/10004.webp",
         tag: "earphone",
       },
       {
         text: "麥克風",
-        img: "/images/pic-detal/ROG-1005/10003.png",
+        img: "/images/pic-detal/ROG-1005/10003.webp",
         tag: "mic",
       },
     ],
@@ -88,22 +88,22 @@ const menus: SetMenu[] = [
     items: [
       {
         text: "MSI",
-        img: "/images/logo/MSI.png",
+        img: "/images/logo/MSI.webp",
         tag: "msi",
       },
       {
         text: "Logitech",
-        img: "/images/logo/LOGI.png",
+        img: "/images/logo/LOGI.webp",
         tag: "logitech",
       },
       {
         text: "Razer",
-        img: "/images/logo/RAZER.png",
+        img: "/images/logo/RAZER.webp",
         tag: "razer",
       },
       {
         text: "ROG",
-        img: "/images/logo/ROG.png",
+        img: "/images/logo/ROG.webp",
         tag: "rog",
       },
     ],
