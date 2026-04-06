@@ -150,7 +150,7 @@ const events = ref<EventItem[]>([
     description: "鍵盤、滑鼠、耳機與螢幕周邊精選折扣，會員再享加碼券。",
     dateRange: "2026/03/01 - 2026/03/14",
     start: "2026-03-01",
-    image: "/images/pic-active/10004.jpg",
+    image: "/images/pic-active/10004.webp",
     tags: ["限時", "全館", "特價"],
     badge: "HOT",
     featured: true,
@@ -167,7 +167,7 @@ const events = ref<EventItem[]>([
     description: "指定系列滿額送，熱門品項限量補貨。",
     dateRange: "2026/03/10 - 2026/03/20",
     start: "2026-03-10",
-    image: "/images/pic-active/10005.jpg",
+    image: "/images/pic-active/10005.webp",
     tags: ["品牌週", "Razer"],
     to: {
       path: "/products",
@@ -182,7 +182,7 @@ const events = ref<EventItem[]>([
     description: "指定系列滿額送，熱門品項限量補貨。",
     dateRange: "2026/03/10 - 2026/03/20",
     start: "2026-03-10",
-    image: "/images/pic-active/10001.jpg",
+    image: "/images/pic-active/10001.webp",
     tags: ["品牌週", "Logitech"],
     to: {
       path: "/products",
@@ -197,7 +197,7 @@ const events = ref<EventItem[]>([
     description: "手感與外型全面升級，多款軸體與配色選擇，打造專屬打字體驗。",
     dateRange: "2026/02/20 - 2026/03/31",
     start: "2026-02-20",
-    image: "/images/pic-active/10002.jpg",
+    image: "/images/pic-active/10002.webp",
     tags: ["新品", "鍵盤"],
     to: {
       name: "products-id",
@@ -210,7 +210,7 @@ const events = ref<EventItem[]>([
     description: "整理桌面風格，從細節開始。多款材質與配色上架。",
     dateRange: "2026/02/20 - 2026/03/31",
     start: "2026-02-20",
-    image: "/images/pic-active/10003.jpg",
+    image: "/images/pic-active/10003.webp",
     tags: ["特價", "配件"],
     to: {
       path: "/products",

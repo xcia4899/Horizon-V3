@@ -113,7 +113,7 @@ const heroSlides = [
     title: "始終電力十足。隨時待命",
     text: "精密調整，帶來極致手感，無限力量，化繁為簡。",
     image: {
-      src: "/images/home/hero/hero-bg-01.jpg",
+      src: "/images/home/hero/hero-bg-01.webp",
       alt: "POWERPLAY 2",
     },
     to: "",
@@ -123,7 +123,7 @@ const heroSlides = [
     title: "智慧供電，炫光就是力量",
     text: "穩定手感與高速反應兼具的 RGB 電競鍵盤。",
     image: {
-      src: "/images/home/hero/hero-bg-02.jpg",
+      src: "/images/home/hero/hero-bg-02.webp",
       alt: "RAZER-1000 桌面展示",
     },
     to: "",
@@ -133,7 +133,7 @@ const heroSlides = [
     title: "極限敏捷，穩定制霸戰場",
     text: " 高敏捷系統與高耐用設計，讓每一次操作都穩定且充滿戰鬥氛圍。",
     image: {
-      src: "/images/home/hero/hero-bg-03.jpg",
+      src: "/images/home/hero/hero-bg-03.webp",
       alt: "RAZER-1017 桌面展示",
     },
     to: "",
