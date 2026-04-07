@@ -1,34 +1,15 @@
+// stores/useUserStore.ts
 import { defineStore } from "pinia";
+import type { UserProfile, UpdateProfilePayload } from "@/types/data/user";
 
-interface UserProfile {
-  id: string;
-  email: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  birthday: string | null;
-  role: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-}
-interface UpdateProfilePayload {
-  first_name: string;
-  last_name: string;
-  birthday: string | null;
-}
-interface MeResponse {
-  ok: boolean;
-  user: {
-    id: string;
-    email?: string;
-  };
-  profile: UserProfile;
-}
 
 export const useUserStore = defineStore("user", () => {
   const profile = ref<UserProfile | null>(null);
   const pending = ref(false);
   const errorMsg = ref("");
   const isLoaded = ref(false);
+
+  const userApi = useUserApi();
 
   const fetchMe = async (force = false) => {
     if (pending.value) return;
@@ -38,37 +19,29 @@ export const useUserStore = defineStore("user", () => {
     errorMsg.value = "";
 
     try {
-      const result = await $fetch<MeResponse>("/api/profile");
+      const result = await userApi.getMe();
       profile.value = result.profile;
       isLoaded.value = true;
+      return result.profile;
     } catch (error: unknown) {
       errorMsg.value =
         error instanceof Error ? error.message : "讀取會員資料失敗";
       profile.value = null;
       isLoaded.value = false;
+      throw error;
     } finally {
       pending.value = false;
     }
   };
-  // 更新會員資料
+
   const updateProfile = async (payload: UpdateProfilePayload) => {
     pending.value = true;
     errorMsg.value = "";
 
     try {
-      const result = await $fetch<{ ok: boolean; profile: UserProfile }>(
-        "/api/profile",
-        {
-          method: "PUT",
-          body: {
-            first_name: payload.first_name,
-            last_name: payload.last_name,
-            birthday: payload.birthday || null,
-          },
-        },
-      );
-
+      const result = await userApi.updateProfile(payload);
       profile.value = result.profile;
+      isLoaded.value = true;
       return result.profile;
     } catch (error: unknown) {
       errorMsg.value =
