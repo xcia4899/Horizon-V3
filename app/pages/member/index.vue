@@ -102,8 +102,12 @@
           <div class="member-form-row">
             <h4 class="member-form-label">角色</h4>
 
-            <div class="member-form-value">
-              {{ profile?.role || "user" }}
+            <div v-if="userStore.isAdmin" class="member-form-value">
+              管理員-{{ userStore.role }}
+            </div>
+
+            <div v-else class="member-form-value">
+              一般會員-{{ userStore.role }}
             </div>
           </div>
         </div>
@@ -113,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useUserStore } from "@/stores/useUserStore";
@@ -123,23 +127,16 @@ definePageMeta({
 });
 
 const AuthStore = useAuthStore();
-const userStore =useUserStore()
-const { profile } = storeToRefs(userStore);
+const userStore = useUserStore();
+const { profile, fullName } = storeToRefs(userStore);
 const loading = ref(false);
 const saving = ref(false);
 const isEdit = ref(false);
-
 
 const form = reactive({
   first_name: "",
   last_name: "",
   birthday: "",
-});
-
-const fullName = computed(() => {
-  const lastName = form.last_name?.trim() ?? "";
-  const firstName = form.first_name?.trim() ?? "";
-  return `${lastName}${firstName}` || "未設定姓名";
 });
 
 const resetForm = () => {
@@ -148,7 +145,13 @@ const resetForm = () => {
   form.birthday = profile.value?.birthday ?? "";
 };
 
-
+watch(
+  profile,
+  () => {
+    resetForm();
+  },
+  { immediate: true },
+);
 
 const handleEdit = () => {
   resetForm();
@@ -192,8 +195,6 @@ const handleLogout = async () => {
     console.error("登出失敗", error);
   }
 };
-
-
 </script>
 <style scoped lang="scss">
 .member-page {

@@ -12,21 +12,22 @@ export const useAuthApi = () => {
 
   // 註冊（含會員資料）
   const signUp = async (payload: SignUpPayload) => {
-    const { data, error } = await supabase.auth.signUp({
-      email: payload.email,
-      password: payload.password,
-      options: {
-        data: {
-          last_name: payload.lastName,
-          name: payload.firstName,
-          birthday: payload.birthday || null,
-        },
+  const { data, error } = await supabase.auth.signUp({
+    email: payload.email,
+    password: payload.password,
+    options: {
+      data: {
+        display_name: `${payload.lastName}${payload.firstName}`,
+        last_name: payload.lastName,
+        first_name: payload.firstName,
+        birthday: payload.birthday || null,
       },
-    });
+    },
+  });
 
-    if (error) throw new Error(error.message || "註冊失敗");
-    return data;
-  };
+  if (error) throw new Error(error.message || "註冊失敗");
+  return data;
+};
 
   //  登入
   const signIn = async (email: string, password: string) => {

@@ -38,7 +38,8 @@ export const useUserStore = defineStore("user", () => {
       profile.value = result.profile;
       isLoaded.value = true;
     } catch (error: unknown) {
-      errorMsg.value = error instanceof Error ? error.message : "讀取會員資料失敗";
+      errorMsg.value =
+        error instanceof Error ? error.message : "讀取會員資料失敗";
       profile.value = null;
       isLoaded.value = false;
     } finally {
@@ -57,12 +58,17 @@ export const useUserStore = defineStore("user", () => {
     return `${profile.value.last_name ?? ""}${profile.value.first_name ?? ""}`;
   });
 
+  const role = computed(() => profile.value?.role ?? "user");
+  const isAdmin = computed(() => role.value === "admin");
+
   return {
     profile,
     pending,
     errorMsg,
     isLoaded,
     fullName,
+    role,
+    isAdmin,
     fetchMe,
     clearUser,
   };

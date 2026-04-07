@@ -164,7 +164,7 @@ const registerRule: FormRules = reactive({
     { required: true, message: "請輸入姓氏", trigger: "blur" },
     { min: 1, max: 20, message: "姓氏長度 1–20 字", trigger: "blur" },
   ],
-  name: [
+  firstName: [
     { required: true, message: "請輸入名字", trigger: "blur" },
     { min: 1, max: 20, message: "名字長度 1–20 字", trigger: "blur" },
   ],

@@ -80,6 +80,7 @@ import { useTagOptions } from "@/composables/useTags";
 
 definePageMeta({
   layout: "admin",
+  middleware: "admin",
 });
 
 //商品pinia
