@@ -1,5 +1,5 @@
 <template>
-  <main class="member-page ">
+  <main class="member-page">
     <section class="member-card container">
       <div class="member-card-header">
         <div class="member-card-title-group">
@@ -9,6 +9,7 @@
 
         <div v-if="!loading" class="member-card-actions">
           <template v-if="!isEdit">
+            <el-button type="danger" @click="handleLogout">登出</el-button>
             <el-button type="primary" @click="handleEdit">編輯資料</el-button>
           </template>
 
@@ -112,32 +113,22 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from "vue";
+import { reactive, ref, computed } from "vue";
 import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useUserStore } from "@/stores/useUserStore";
 
-interface Profile {
-  id: string;
-  email: string | null;
-  role: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  birthday: string | null;
-}
+definePageMeta({
+  middleware: "auth",
+});
 
-interface MeResponse {
-  ok: boolean;
-  user: {
-    id: string;
-    email: string | null;
-  };
-  profile: Profile | null;
-}
-
+const AuthStore = useAuthStore();
+const userStore =useUserStore()
+const { profile } = storeToRefs(userStore);
 const loading = ref(false);
 const saving = ref(false);
 const isEdit = ref(false);
 
-const profile = ref<Profile | null>(null);
 
 const form = reactive({
   first_name: "",
@@ -157,23 +148,7 @@ const resetForm = () => {
   form.birthday = profile.value?.birthday ?? "";
 };
 
-const fetchProfile = async () => {
-  loading.value = true;
 
-  try {
-    const result = await $fetch<MeResponse>("/api/me", {
-      method: "GET",
-    });
-
-    profile.value = result.profile;
-    resetForm();
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "會員資料讀取失敗";
-    ElMessage.error(message);
-  } finally {
-    loading.value = false;
-  }
-};
 
 const handleEdit = () => {
   resetForm();
@@ -199,7 +174,7 @@ const handleSave = async () => {
     });
 
     ElMessage.success("會員資料更新成功");
-    await fetchProfile();
+    await userStore.fetchMe(true);
     isEdit.value = false;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "會員資料更新失敗";
@@ -209,9 +184,16 @@ const handleSave = async () => {
   }
 };
 
-onMounted(() => {
-  fetchProfile();
-});
+const handleLogout = async () => {
+  try {
+    await AuthStore.logout();
+    await navigateTo("/");
+  } catch (error) {
+    console.error("登出失敗", error);
+  }
+};
+
+
 </script>
 <style scoped lang="scss">
 .member-page {
@@ -268,6 +250,7 @@ onMounted(() => {
 .member-profile {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   padding: 20px;
   border: 1px solid var(--border-default);
@@ -290,18 +273,15 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    .member-profile-name {
+      color: var(--text-primary);
+    }
+
+    .member-profile-email {
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
   }
-}
-
-.member-profile-name {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.member-profile-email {
-  margin: 0;
-  color: var(--text-secondary);
-  word-break: break-all;
 }
 
 /* ================= 表單 ================= */

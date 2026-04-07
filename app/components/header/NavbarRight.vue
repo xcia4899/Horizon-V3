@@ -228,7 +228,12 @@ const goToLogin = async () => {
   await looding(100);
   closeMenu();
   props.closeMenuOpenMobile();
-  await navigateTo("/auth/login");
+
+  if (authStore.user) {
+    await navigateTo("/member");
+  } else {
+    await navigateTo("/auth/login");
+  }
 };
 const goToCart = async () => {
   await looding(100);
