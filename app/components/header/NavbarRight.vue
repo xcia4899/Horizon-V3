@@ -31,16 +31,26 @@
     </button>
   </div>
 
-  <!-- 登入 -->
-  <button type="button" class="btnItem setItem login-btn" @click="goToLogin">
-    <Icon name="mdi:account-circle" class="icon" size="24" />
-  </button>
   <!-- 購物車 -->
   <button type="button" class="btnItem setItem cart-btn" @click="goToCart">
     <Icon name="meteor-icons:cart-shopping" class="icon" size="24" />
     <span v-if="cartStore.totalQuantity > 0" class="cart-badge">
       {{ cartStore.totalQuantity > 99 ? "99+" : cartStore.totalQuantity }}
     </span>
+  </button>
+  <!-- 登入 -->
+  <button type="button" class="btnItem setItem login-btn" @click="goToLogin">
+    <div v-if="authStore.user">
+      <span v-if="userStore.fullName">
+        {{ userStore.fullName }}
+      </span>
+      <span v-else>
+        {{ authStore.user.email }}
+      </span>
+    </div>
+    <div v-else>
+      <Icon name="mdi:account-circle" class="icon" size="24" />
+    </div>
   </button>
   <!-- 後台進入 -->
   <button v-if="true" type="button" class="btnItem" @click="goToPanel">
@@ -88,7 +98,7 @@ import { storeToRefs } from "pinia";
 import { useCartStore } from "@/stores/useCart";
 
 // import { useMenu } from "~/composables/useMenu";
-const {  closeMenu } = useMenu();
+const { closeMenu } = useMenu();
 //接收props
 const props = defineProps<{
   isMenuOpenMobile: boolean;
@@ -231,6 +241,15 @@ const goToPanel = () => {
   props.closeMenuOpenMobile();
   navigateTo("/admin");
 };
+
+const authStore = useAuthStore();
+const userStore = useUserStore();
+
+onMounted(async () => {
+  if (authStore.user && !userStore.isLoaded) {
+    await userStore.fetchMe();
+  }
+});
 </script>
 
 <style scoped lang="scss">

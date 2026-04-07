@@ -42,9 +42,11 @@ export const useAuthStore = defineStore("auth", () => {
   const logout = async () => {
     loading.value = true;
     errorMsg.value = "";
-
+    const userStore = useUserStore();
     try {
       await authApi.signOut();
+      user.value = null;
+      userStore.clearUser();
     } catch (error: unknown) {
       errorMsg.value = error instanceof Error ? error.message : "登出失敗";
       throw error;

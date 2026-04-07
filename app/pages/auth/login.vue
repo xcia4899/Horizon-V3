@@ -70,8 +70,10 @@
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useUserStore } from "@/stores/useUserStore";
 
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 // 表單 ref
 const formLoginRef = ref<FormInstance>();
@@ -140,6 +142,7 @@ const submitLoginForm = async () => {
 
   try {
     await authStore.login(formLogin.email, formLogin.password);
+    await userStore.fetchMe(true);
     await navigateTo("/");
   } catch (error) {
     alert(error instanceof Error ? error.message : "登入失敗");

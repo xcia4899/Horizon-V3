@@ -15,25 +15,34 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { data: profile, error: profileError } = await client
+  const body = await readBody<{
+    first_name?: string;
+    last_name?: string;
+    birthday?: string | null;
+  }>(event);
+
+  const { data, error } = await client
     .from("profiles")
-    .select("*")
+    .update({
+      first_name: body.first_name ?? null,
+      last_name: body.last_name ?? null,
+      birthday: body.birthday ?? null,
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", user.id)
+    .select()
     .single();
 
-  if (profileError) {
+  if (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: profileError.message,
+      statusMessage: error.message,
     });
   }
 
   return {
     ok: true,
-    user: {
-      id: user.id,
-      email: user.email,
-    },
-    profile,
+    message: "會員資料更新成功",
+    data,
   };
 });
