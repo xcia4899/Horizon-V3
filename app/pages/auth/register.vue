@@ -21,9 +21,9 @@
               placeholder="姓氏"
             />
           </el-form-item>
-          <el-form-item prop="name">
+          <el-form-item prop="firstName">
             <el-input
-              v-model="formRegister.name"
+              v-model="formRegister.firstName"
               type="text"
               autocomplete="off"
               placeholder="名字"
@@ -39,7 +39,7 @@
           </el-form-item>
           <el-form-item prop="email">
             <el-input
-              v-model="formRegister.email"
+              v-model.trim="formRegister.email"
               type="text"
               autocomplete="off"
               placeholder="帳號"
@@ -104,31 +104,33 @@
 </template>
 
 <script setup lang="ts">
-import type { FormRules } from "element-plus";
-import { useAuthStore } from "@/stores/useUserAuth";
-const auth = useAuthStore();
+import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/useAuthStore";
+
+const authStore = useAuthStore();
 
 interface RegisterForm {
   lastName: string;
-  name: string;
+  firstName: string;
   email: string;
   password: string;
   passwordConfirm: string;
-  birthday?: string;
+  birthday: string;
 }
 
-const formRegisterRef = ref();
+const formRegisterRef = ref<FormInstance>();
 
 const formRegister = reactive<RegisterForm>({
   lastName: "",
-  name: "",
+  firstName: "",
   email: "",
   password: "",
   passwordConfirm: "",
   birthday: "",
 });
 
-//密碼檢查規則
+// 密碼檢查規則
 const validateRegisterPwd = (
   rule: unknown,
   value: string,
@@ -139,7 +141,8 @@ const validateRegisterPwd = (
   }
   callback();
 };
-//密碼二次確認規則
+
+// 密碼二次確認規則
 const validateConfirmPwd = (
   rule: unknown,
   value: string,
@@ -148,19 +151,21 @@ const validateConfirmPwd = (
   if (!value) {
     return callback(new Error("請再次輸入密碼"));
   }
+
   if (value !== formRegister.password) {
     return callback(new Error("兩次輸入的密碼不一致"));
   }
+
   callback();
 };
 
 const registerRule: FormRules = reactive({
   lastName: [
-    { required: true, trigger: "blur", message: "請輸入姓氏" },
+    { required: true, message: "請輸入姓氏", trigger: "blur" },
     { min: 1, max: 20, message: "姓氏長度 1–20 字", trigger: "blur" },
   ],
   name: [
-    { required: true, trigger: "blur", message: "請輸入名字" },
+    { required: true, message: "請輸入名字", trigger: "blur" },
     { min: 1, max: 20, message: "名字長度 1–20 字", trigger: "blur" },
   ],
   email: [
@@ -169,45 +174,49 @@ const registerRule: FormRules = reactive({
     { max: 100, message: "Email 長度不可超過 100", trigger: "blur" },
   ],
   password: [
-    {
-      required: true,
-      min: 6,
-      max: 20,
-      message: "密碼為長度為 6–20 位",
-      trigger: "blur",
-    },
+    { required: true, message: "請輸入密碼", trigger: "blur" },
+    { min: 6, max: 20, message: "密碼長度為 6–20 位", trigger: "blur" },
     { validator: validateRegisterPwd, trigger: "blur" },
   ],
   passwordConfirm: [
     { required: true, message: "請再次輸入密碼", trigger: "blur" },
     { validator: validateConfirmPwd, trigger: "blur" },
   ],
-  birthday: [{ required: true, message: "請選擇生日", trigger: "change" }],
+  birthday: [
+    { required: true, message: "請選擇生日", trigger: "change" },
+  ],
 });
 
 const submitRegisterForm = async () => {
   if (!formRegisterRef.value) return;
 
-  // 1. 先做表單驗證
   try {
     await formRegisterRef.value.validate();
-    console.log("註冊表單驗證成功");
   } catch (err) {
     console.log("註冊表單驗證失敗", err);
+    ElMessage.error("請檢查輸入內容");
     return;
   }
-  //2 .呼叫註冊API (目前是localStorage 模擬)
+
   try {
-    await auth.register(formRegister);
+    await authStore.register({
+      email: formRegister.email.trim().toLowerCase(),
+      password: formRegister.password,
+      lastName: formRegister.lastName.trim(),
+      firstName: formRegister.firstName.trim(),
+      birthday: formRegister.birthday,
+    });
+
+    ElMessage.success("註冊成功，請前往登入頁面登入");
+    await navigateTo("/auth/login");
   } catch (e) {
-    alert((e as Error).message);
+    ElMessage.error(e instanceof Error ? e.message : "註冊失敗");
   }
 };
 </script>
 
 <style scoped lang="scss">
 .register {
-  // height: 100vh;
   background: var(--bg-surface);
   display: grid;
   place-items: center;

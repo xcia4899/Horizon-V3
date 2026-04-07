@@ -54,7 +54,7 @@ export const useUserStore = defineStore("user", () => {
 
   const fullName = computed(() => {
     if (!profile.value) return "";
-    return `${profile.value.first_name ?? ""}${profile.value.last_name ?? ""}`;
+    return `${profile.value.last_name ?? ""}${profile.value.first_name ?? ""}`;
   });
 
   return {

@@ -1,6 +1,14 @@
 // stores/useAuthStore.ts
 import { defineStore } from "pinia";
 
+interface RegisterPayload {
+  email: string;
+  password: string;
+  lastName: string;
+  firstName: string;
+  birthday: string;
+}
+
 export const useAuthStore = defineStore("auth", () => {
   const user = useSupabaseUser();
   const loading = ref(false);
@@ -9,12 +17,13 @@ export const useAuthStore = defineStore("auth", () => {
   const authApi = useAuthApi();
 
   // 註冊
-  const register = async (email: string, password: string) => {
+  const register = async (payload: RegisterPayload) => {
     loading.value = true;
     errorMsg.value = "";
 
     try {
-      await authApi.signUp(email, password);
+      const result = await authApi.signUp(payload);
+      return result;
     } catch (error: unknown) {
       errorMsg.value = error instanceof Error ? error.message : "註冊失敗";
       throw error;

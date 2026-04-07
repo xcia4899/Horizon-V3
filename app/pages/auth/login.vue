@@ -60,15 +60,13 @@
         <NuxtLink class="register" to="/auth/register">註冊會員</NuxtLink>
       </section>
     </section>
-
-    <div v-if="authStore.user">已登入</div>
-    <div v-else>未登入</div>
   </main>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useUserStore } from "@/stores/useUserStore";
 
@@ -141,11 +139,16 @@ const submitLoginForm = async () => {
   }
 
   try {
-    await authStore.login(formLogin.email, formLogin.password);
+    await authStore.login(
+      formLogin.email.trim().toLowerCase(),
+      formLogin.password,
+    );
     await userStore.fetchMe(true);
+    ElMessage.success("登入成功!");
     await navigateTo("/");
   } catch (error) {
-    alert(error instanceof Error ? error.message : "登入失敗");
+    console.log(error instanceof Error ? error.message : "登入失敗");
+    ElMessage.error("登入失敗");
   }
 };
 </script>
