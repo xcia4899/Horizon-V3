@@ -508,6 +508,9 @@ onMounted(async () => {
       height: 32px;
     }
   }
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 @media (hover: hover) and (pointer: fine) {
   .cart-btn:hover ~ .miniCart {
