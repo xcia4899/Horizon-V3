@@ -1,3 +1,4 @@
+// server/api/profile/index.get.ts
 import { serverSupabaseClient } from "#supabase/server";
 
 export default defineEventHandler(async (event) => {
@@ -15,32 +16,25 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const body = await readBody<{
-    first_name?: string | null;
-    last_name?: string | null;
-    birthday?: string | null;
-  }>(event);
-
-  const { data, error } = await client
+  const { data: profile, error: profileError } = await client
     .from("profiles")
-    .update({
-      first_name: body.first_name ?? null,
-      last_name: body.last_name ?? null,
-      birthday: body.birthday ?? null,
-    })
+    .select("*")
     .eq("id", user.id)
-    .select()
     .single();
 
-  if (error) {
+  if (profileError) {
     throw createError({
       statusCode: 500,
-      statusMessage: error.message,
+      statusMessage: profileError.message,
     });
   }
 
   return {
     ok: true,
-    profile: data,
+    user: {
+      id: user.id,
+      email: user.email,
+    },
+    profile,
   };
 });

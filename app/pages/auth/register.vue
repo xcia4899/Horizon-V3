@@ -13,30 +13,6 @@
         class="register-enter"
       >
         <div class="enter-inputs">
-          <el-form-item prop="lastName">
-            <el-input
-              v-model="formRegister.lastName"
-              type="text"
-              autocomplete="off"
-              placeholder="姓氏"
-            />
-          </el-form-item>
-          <el-form-item prop="firstName">
-            <el-input
-              v-model="formRegister.firstName"
-              type="text"
-              autocomplete="off"
-              placeholder="名字"
-            />
-          </el-form-item>
-          <el-form-item prop="birthday">
-            <el-date-picker
-              v-model="formRegister.birthday"
-              type="date"
-              placeholder="出生日期"
-              value-format="YYYY-MM-DD"
-            />
-          </el-form-item>
           <el-form-item prop="email">
             <el-input
               v-model.trim="formRegister.email"
@@ -61,6 +37,30 @@
               autocomplete="off"
               placeholder="再次輸入密碼"
               show-password
+            />
+          </el-form-item>
+          <el-form-item prop="lastName">
+            <el-input
+              v-model="formRegister.lastName"
+              type="text"
+              autocomplete="off"
+              placeholder="姓氏"
+            />
+          </el-form-item>
+          <el-form-item prop="firstName">
+            <el-input
+              v-model="formRegister.firstName"
+              type="text"
+              autocomplete="off"
+              placeholder="名字"
+            />
+          </el-form-item>
+          <el-form-item prop="birthday">
+            <el-date-picker
+              v-model="formRegister.birthday"
+              type="date"
+              placeholder="出生日期"
+              value-format="YYYY-MM-DD"
             />
           </el-form-item>
         </div>
@@ -182,9 +182,7 @@ const registerRule: FormRules = reactive({
     { required: true, message: "請再次輸入密碼", trigger: "blur" },
     { validator: validateConfirmPwd, trigger: "blur" },
   ],
-  birthday: [
-    { required: true, message: "請選擇生日", trigger: "change" },
-  ],
+  birthday: [{ required: true, message: "請選擇生日", trigger: "change" }],
 });
 
 const submitRegisterForm = async () => {

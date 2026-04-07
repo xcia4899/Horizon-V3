@@ -53,7 +53,12 @@
     </div>
   </button>
   <!-- 後台進入 -->
-  <button v-if="true" type="button" class="btnItem" @click="goToPanel">
+  <button
+    v-if="userStore.isAdmin"
+    type="button"
+    class="btnItem"
+    @click="goToPanel"
+  >
     <Icon name="mdi:wrench" class="icon" size="24" />
   </button>
   <!-- 迷你購物車顯示 -->
