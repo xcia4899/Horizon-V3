@@ -31,6 +31,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "^1.12.1",
     "@types/node": "^25.0.8",
-    "sass": "^1.97.2"
+    "sass": "^1.97.2",
+    "supabase": "^2.87.0"
   }
 }
