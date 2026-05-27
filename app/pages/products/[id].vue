@@ -297,11 +297,12 @@ const handleBack = () => {
       flex-direction: column;
       // align-items: center;
       justify-content: stretch;
-
+            overflow: auto;
+      scrollbar-width: none;
       gap: 32px;
 
       .product-media-main {
-        flex: 0 0 50%;
+        flex: 0 0 40%;
         display: flex;
         justify-content: center;
         background: var(--bg-surface-card);
@@ -317,9 +318,11 @@ const handleBack = () => {
         }
       }
       .product-media-thumbnails {
+
         display: flex;
         justify-content: center;
         gap: 24px;
+  
         .thumbnails-btn {
           display: flex;
           align-items: center;
